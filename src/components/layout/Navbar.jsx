@@ -1,7 +1,7 @@
 import { Layout, Menu, Button, Drawer, Grid } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.jpg";
 
 const { Header } = Layout;
@@ -17,6 +17,7 @@ const menuItems = [
 ];
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const screens = useBreakpoint();
   const isMobile = !screens.md;
   const [open, setOpen] = useState(false);
@@ -45,11 +46,11 @@ const Navbar = () => {
           }}
         >
           {/* Logo */}
-          <Link to="/">
+          <Link to="/" onClick={(e) => { e.preventDefault(); navigate('/'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} aria-label="Go to homepage" style={{ display: 'inline-block' }}>
             <img
               src={logo}
               alt="NGO Logo"
-              style={{ height: 42 }}
+              style={{ height: 42, cursor: 'pointer' }}
             />
           </Link>
 
