@@ -150,7 +150,7 @@ const Home = () => {
 
             {/* WHO WE ARE SECTION */}
 
-            <Content id="about" style={{ padding: '80px 20px', backgroundColor: '#ffffff' }}>
+            <Content style={{ padding: '80px 20px', backgroundColor: '#ffffff' }}>
                 <Row justify="center">
                     <Col xs={24} md={16} style={{ textAlign: 'center' }}>
 
@@ -273,7 +273,7 @@ const Home = () => {
 
             {/* OUR FEATURED PROGRAMS SECTION */}
 
-            <Content id='programs' style={{ padding: '100px 20px', backgroundColor: '#fafafa' }}>
+            <Content style={{ padding: '100px 20px', backgroundColor: '#fafafa' }}>
                 <Row justify="center">
                     <Col xs={24} style={{ textAlign: 'center', marginBottom: 60 }}>
                         <motion.div
@@ -404,7 +404,7 @@ const Home = () => {
 
             {/* OUR IMPACT IN NUMBERS SECTION */}
 
-            <Content id="projects" style={{ padding: '100px 20px', backgroundColor: '#ffffff' }}>
+            <Content style={{ padding: '100px 20px', backgroundColor: '#ffffff' }}>
                 <Row justify="center">
                     <Col xs={24} style={{ textAlign: 'center', marginBottom: 60 }}>
                         <motion.div
@@ -707,7 +707,7 @@ const Home = () => {
 
 
             {/* GET IN TOUCH SECTION */}
-            <Content id="contact" style={{ padding: '100px 20px', backgroundColor: '#f5f8fc' }}>
+            <Content style={{ padding: '100px 20px', backgroundColor: '#f5f8fc' }}>
                 <Row justify="center">
                     <Col xs={24} md={16} style={{ textAlign: 'center', marginBottom: 40 }}>
                         <motion.div
