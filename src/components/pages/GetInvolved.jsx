@@ -177,7 +177,7 @@ const GetInvolved = () => {
                   fontSize: 16,
                   marginBottom: 30,
                 }} >
-                Your generous contributions enable us to continue our vital work, transforming lives and building stronger communities. Every amount makes a significant impact.
+                Your generous contributions enable us to continue our vital work, transforming lives and building stronger communities. <br></br>Every amount makes a significant impact.
               </Paragraph> {/* Donation Amount */}
               <Space size="middle"
                 style={{

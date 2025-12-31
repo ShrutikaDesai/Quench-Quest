@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Layout, Typography, Row, Col, Card, Button, Tag, ConfigProvider, Divider } from "antd";
 import {
     BookOutlined,
@@ -98,13 +98,71 @@ const storiesData = [
 const Programs = () => {
     const { colorPrimary, colorTextSecondary } = antdTheme.token;
 
+    // Animation state + helpers
+    const [visibleSections, setVisibleSections] = useState({});
+
+    const sectionBaseStyle = {
+        opacity: 0,
+        transform: "translateY(24px)",
+        transition: "opacity 600ms cubic-bezier(.2,.9,.2,1), transform 600ms cubic-bezier(.2,.9,.2,1)",
+    };
+
+    const sectionVisibleStyle = {
+        opacity: 1,
+        transform: "translateY(0)",
+    };
+
+    const getSectionStyle = (id, extra = {}) => ({
+        ...extra,
+        ...sectionBaseStyle,
+        ...(visibleSections[id] ? sectionVisibleStyle : {}),
+    });
+
+    // Per-card animation helper (direction cycles: up, left, right) with staggered delay
+    const getCardStyle = (id, idx) => {
+        const directions = ["up", "left", "right"];
+        const dir = directions[idx % directions.length];
+        const base = {
+            opacity: 0,
+            transform: dir === "up" ? "translateY(24px)" : dir === "left" ? "translateX(-24px)" : "translateX(24px)",
+            transition: "opacity 600ms cubic-bezier(.2,.9,.2,1), transform 600ms cubic-bezier(.2,.9,.2,1)",
+            transitionDelay: `${idx * 120}ms`,
+        };
+        const visible = {
+            opacity: 1,
+            transform: "translateX(0) translateY(0)",
+        };
+        return {
+            ...base,
+            ...(visibleSections[id] ? visible : {}),
+        };
+    };
+
+    useEffect(() => {
+        if (typeof window === "undefined") return;
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute("data-section");
+                        if (id) setVisibleSections((s) => ({ ...s, [id]: true }));
+                    }
+                });
+            },
+            { threshold: 0.15 }
+        );
+
+        document.querySelectorAll("[data-section]").forEach((el) => observer.observe(el));
+        return () => observer.disconnect();
+    }, []);
+
     return (
         <ConfigProvider theme={antdTheme}>
             <Layout>
                 <Content style={{ padding: "80px 20px", background: "#ffffff" }}>
 
                     {/* Header */}
-                    <Row justify="center">
+                    <Row data-section="programs-header" justify="center" style={getSectionStyle("programs-header", {})}>
                         <Col xs={24} md={14} style={{ textAlign: "center" }}>
                             <Title level={2}>
                                 Our <span style={{ color: colorPrimary }}>Programs</span>
@@ -144,9 +202,10 @@ const Programs = () => {
 
                     {/* Cards Container */}
                     <Row
+                        data-section="program-cards"
                         gutter={[40, 40]}
                         justify="center"
-                        style={{ maxWidth: 1600, margin: "0 auto" }}
+                        style={getSectionStyle("program-cards", { maxWidth: 1600, margin: "0 auto" })}
                     >
                         {programsData.map((program, index) => (
                             <Col xs={24} sm={24} md={12} lg={10} key={index}>
@@ -214,7 +273,7 @@ const Programs = () => {
 
                 {/* STORIES OF CHANGE SECTION */}
                 <Content>
-                    <Row justify="center" style={{ marginTop: 120 }}>
+                    <Row data-section="stories" justify="center" style={getSectionStyle("stories", { marginTop: 120 })}>
                         <Col xs={24} md={20}>
 
                             {/* Section Header */}
@@ -320,7 +379,7 @@ const Programs = () => {
 
 
                 {/* DONATE NOW SECTION */}
-                <Content style={{ padding: "80px 20px", background: "#f5f5f5", marginTop: 80 }}>
+                <Content data-section="donate" style={getSectionStyle("donate", { padding: "80px 20px", background: "#f5f5f5", marginTop: 80 })}>
                     <Row justify="center">
                         <Col xs={24} md={14} style={{ textAlign: "center" }}>
                             <Title level={2}>
