@@ -137,7 +137,7 @@ const Projects = () => {
       </motion.div>
 
       {/* Project Cards Section */}
-      <div style={{ padding: "40px 60px 80px", background: "#ffffff" }}>
+      <div style={{ padding: "100px 100px", background: "#ffffff" }}>
         <Row gutter={[24, 24]}>
           {filteredProjects.map((project, idx) => (
             <Col xs={24} sm={24} md={12} lg={8} key={idx}>

@@ -56,6 +56,66 @@ const GetInvolved = () => {
     };
   }, []);
 
+  // Animation state + helper for sections
+  const [visibleSections, setVisibleSections] = useState({});
+
+  const sectionBaseStyle = {
+    opacity: 0,
+    transform: "translateY(24px)",
+    transition: "opacity 600ms cubic-bezier(.2,.9,.2,1), transform 600ms cubic-bezier(.2,.9,.2,1)",
+  };
+
+  const sectionVisibleStyle = {
+    opacity: 1,
+    transform: "translateY(0)",
+  };
+
+  const getSectionStyle = (id, extra = {}) => {
+    // Special animation for Volunteer: slide in from left
+    if (id === "volunteer") {
+      const base = {
+        opacity: 0,
+        transform: "translateX(-24px)",
+        transition:
+          "opacity 700ms cubic-bezier(.2,.9,.2,1), transform 700ms cubic-bezier(.2,.9,.2,1)",
+      };
+      const visible = {
+        opacity: 1,
+        transform: "translateX(0)",
+      };
+      return {
+        ...extra,
+        ...base,
+        ...(visibleSections[id] ? visible : {}),
+      };
+    }
+
+    // Default animation (fade up)
+    return {
+      ...extra,
+      ...sectionBaseStyle,
+      ...(visibleSections[id] ? sectionVisibleStyle : {}),
+    };
+  };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute("data-section");
+            if (id) setVisibleSections((s) => ({ ...s, [id]: true }));
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+
+    document.querySelectorAll("[data-section]").forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
   const donationAmounts = [25, 50, 100, 250];
 
   const handleDonate = () => {
@@ -74,7 +134,7 @@ const GetInvolved = () => {
     <Layout>
       <Content style={{ padding: "0px 20px", backgroundColor: "#ffffff" }}>
         {/* ================= Donation Section ================= */}
-        <Row justify="center" style={{ marginBottom: 30, marginLeft: -20, marginRight: -20 }}>
+        <Row data-section="donation" justify="center" style={getSectionStyle("donation", { marginBottom: 30, marginLeft: -20, marginRight: -20 })}>
           <Col xs={24} md={24}>
             <Card
               style={{
@@ -150,7 +210,7 @@ const GetInvolved = () => {
                              <Option value="UPI"> <GoogleOutlined /> UPI (Google Pay, PhonePe, Paytm) </Option> <Option value="NetBanking"> <BankOutlined /> Net Banking </Option> </Select> {/* Secure Payment Note */} <Paragraph style={{ marginTop: 20, color: colorTextSecondary, fontSize: 14, display: "flex", justifyContent: "center", alignItems: "center", gap: 6, }} > <LockOutlined style={{ color: colorPrimary }} /> Secure payment via trusted payment gateways </Paragraph> {/* Donate Button */} <Button type="primary" size="large" style={{ borderRadius: 8, marginTop: 10, width: isMobile ? "100%" : undefined }} block={isMobile} onClick={handleDonate} > Donate ₹{amount} </Button> </Card> </Col> </Row>
 
         {/* ================= Volunteer Section ================= */}
-        <Row justify="center" gutter={[16, 16]} style={{ marginBottom: 60 }}>
+        <Row data-section="volunteer" justify="center" gutter={[16, 16]} style={getSectionStyle("volunteer", { marginBottom: 60 })}>
           <Col xs={24} sm={22} md={20} lg={16}>
             <Card
               style={{
@@ -239,7 +299,7 @@ const GetInvolved = () => {
         </Row>
 
         {/* ================= Corporate Partnerships Section ================= */}
-        <Row justify="center" gutter={[16, 16]} style={{ marginBottom: 60, marginLeft: -20, marginRight: -20 }}>
+        <Row data-section="corporate" justify="center" gutter={[16, 16]} style={getSectionStyle("corporate", { marginBottom: 60, marginLeft: -20, marginRight: -20 })}>
           <Col xs={24} md={24}>
             <Card
               style={{
@@ -307,7 +367,7 @@ const GetInvolved = () => {
         </Row>
 
         {/* ================= Upcoming Fundraising Events ================= */}
-        <Row justify="center" gutter={[32, 32]} style={{ marginBottom: 80 }}>
+        <Row data-section="upcoming" justify="center" gutter={[32, 32]} style={getSectionStyle("upcoming", { marginBottom: 80 })}>
           <Col xs={24} sm={22} md={20}>
             <Title level={2} style={{ textAlign: "center" }}>Upcoming Fundraising Events</Title>
 
