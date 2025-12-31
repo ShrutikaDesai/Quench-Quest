@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Layout, Typography, Row, Col, Divider } from "antd";
 import { motion } from "framer-motion";
 import {
@@ -23,7 +23,7 @@ import award2 from "../../assets/news2.jpg";
 import award3 from "../../assets/news3.jpg";
 import heroBg from "../../assets/hero-img1.png";
 
-const { Content } = Layout;  
+const { Content } = Layout;
 const { Title, Paragraph } = Typography;
 const partnerLogos = [
   partner1,
@@ -33,29 +33,6 @@ const partnerLogos = [
   partner5,
 ];
 
-const awards = [
-  {
-    title: "‘iTrain on Wheels’ Wins Strategic CSR Project of the Year 2025",
-    description:
-      "At the 3rd Bharat CSR & Sustainability Summit, Quench Quest Social Foundation was recognized for its flagship initiative ‘iTrain on Wheels’, empowering thousands with skill-based education and entrepreneurial training across India.",
-    image: award1,
-    linkText: "View all →",
-  },
-  {
-    title: "Excellence in Community Development Award",
-    description:
-      "Honored for outstanding contribution towards education, healthcare, and livelihood programs benefiting underserved communities nationwide.",
-    image: award2,
-    linkText: "View all →",
-  },
-  {
-    title: "Best NGO for Social Impact",
-    description:
-      "Awarded for sustained impact, transparency, and innovation in social welfare initiatives focused on women and children.",
-    image: award3,
-    linkText: "View all →",
-  },
-];
 
 const visionMission = [
   {
@@ -87,34 +64,34 @@ const teamMembers = [
       "Specializes in designing and implementing scalable welfare programs ensuring maximum impact in underserved communities.",
     img: "https://randomuser.me/api/portraits/men/32.jpg",
   },
-  {
-    name: "Ms. Priya Singh",
-    role: "Head of Community Outreach",
-    desc:
-      "Dedicated to building strong relationships with local communities and understanding their unique needs firsthand.",
-    img: "https://randomuser.me/api/portraits/women/65.jpg",
-  },
-  {
-    name: "Mr. David Lee",
-    role: "Impact Assessment Lead",
-    desc:
-      "Oversees data collection and analysis to measure project outcomes and ensure transparency and accountability.",
-    img: "https://randomuser.me/api/portraits/men/54.jpg",
-  },
-  {
-    name: "Dr. Sarah Khan",
-    role: "Health & Education Director",
-    desc:
-      "A public health expert passionate about improving access to quality healthcare and education for women and children.",
-    img: "https://randomuser.me/api/portraits/women/68.jpg",
-  },
-  {
-    name: "Ms. Emily Chen",
-    role: "Livelihood Training Coordinator",
-    desc:
-      "Develops and implements skill development programs that promote self-reliance and economic independence.",
-    img: "https://randomuser.me/api/portraits/women/12.jpg",
-  },
+  // {
+  //   name: "Ms. Priya Singh",
+  //   role: "Head of Community Outreach",
+  //   desc:
+  //     "Dedicated to building strong relationships with local communities and understanding their unique needs firsthand.",
+  //   img: "https://randomuser.me/api/portraits/women/65.jpg",
+  // },
+  // {
+  //   name: "Mr. David Lee",
+  //   role: "Impact Assessment Lead",
+  //   desc:
+  //     "Oversees data collection and analysis to measure project outcomes and ensure transparency and accountability.",
+  //   img: "https://randomuser.me/api/portraits/men/54.jpg",
+  // },
+  // {
+  //   name: "Dr. Sarah Khan",
+  //   role: "Health & Education Director",
+  //   desc:
+  //     "A public health expert passionate about improving access to quality healthcare and education for women and children.",
+  //   img: "https://randomuser.me/api/portraits/women/68.jpg",
+  // },
+  // {
+  //   name: "Ms. Emily Chen",
+  //   role: "Livelihood Training Coordinator",
+  //   desc:
+  //     "Develops and implements skill development programs that promote self-reliance and economic independence.",
+  //   img: "https://randomuser.me/api/portraits/women/12.jpg",
+  // },
 ];
 
 const impactStats = [
@@ -135,6 +112,31 @@ const impactStats = [
   },
 ];
 
+
+const awards = [
+  {
+    title: "‘iTrain on Wheels’ Wins Strategic CSR Project of the Year 2025",
+    description:
+      "At the 3rd Bharat CSR & Sustainability Summit, Quench Quest Social Foundation was recognized for its flagship initiative ‘iTrain on Wheels’, empowering thousands with skill-based education and entrepreneurial training across India.",
+    image: award1,
+    linkText: "View all →",
+  },
+  {
+    title: "Excellence in Community Development Award",
+    description:
+      "Honored for outstanding contribution towards education, healthcare, and livelihood programs benefiting underserved communities nationwide.",
+    image: award2,
+    linkText: "View all →",
+  },
+  {
+    title: "Best NGO for Social Impact",
+    description:
+      "Awarded for sustained impact, transparency, and innovation in social welfare initiatives focused on women and children.",
+    image: award3,
+    linkText: "View all →",
+  },
+];
+
 // Motion variants for hero section
 const heroVariants = {
   hidden: {},
@@ -151,6 +153,22 @@ const paraVariant = {
 
 const About = () => {
   const { colorPrimary, colorTextSecondary } = antdTheme.token;
+
+  // Desktop helper (apply extra left padding on larger screens)
+  const [isDesktop, setIsDesktop] = useState(
+    typeof window !== "undefined" ? window.matchMedia("(min-width: 992px)").matches : false
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 992px)");
+    const handler = (e) => setIsDesktop(e.matches);
+    if (mq.addEventListener) mq.addEventListener("change", handler);
+    else mq.addListener(handler);
+    return () => {
+      if (mq.removeEventListener) mq.removeEventListener("change", handler);
+      else mq.removeListener(handler);
+    };
+  }, []);
 
   return (
     <Layout>
@@ -186,7 +204,7 @@ const About = () => {
             >
               <motion.div variants={titleVariant}>
                 <Title level={1}>
-                  <span style={{ color:  antdTheme.token.colorBgHeader }}>ABOUT</span> <span style={{ color: colorPrimary }}>US</span>
+                  <span style={{ color: antdTheme.token.colorBgHeader }}>ABOUT</span> <span style={{ color: colorPrimary }}>US</span>
                 </Title>
               </motion.div>
 
@@ -278,7 +296,7 @@ const About = () => {
 
 
       {/* VISION & MISSION */}
-      <Content style={{ padding: "80px 20px", background: "#fafafa" }}>
+      <Content style={{ padding: "100px 20px", background: "#fafafa" }}>
         <Row gutter={[40, 40]} justify="center">
           {visionMission.map((item, index) => (
             <Col xs={24} md={10} key={index}>
@@ -376,7 +394,7 @@ const About = () => {
 
 
       {/* OUR TEAM SECTION */}
-      <Content style={{ padding: "80px 20px", background: "#fafafa" }}>
+      <Content style={{ padding: "100px 20px", background: "#fafafa" }}>
         <Row justify="center">
           <Col xs={24} style={{ textAlign: "center", marginBottom: 60 }}>
 
@@ -589,7 +607,7 @@ const About = () => {
                 }}
               >
                 {/* LEFT CONTENT */}
-                <Col xs={24} md={12}>
+                <Col xs={24} md={12} style={{ paddingLeft: isDesktop ? 64 : 20 }}>
                   <motion.div
                     initial={{ opacity: 0, x: -40 }}
                     whileInView={{ opacity: 1, x: 0 }}
@@ -660,7 +678,7 @@ const About = () => {
 
 
       {/* ================= PARTNERS SECTION ================= */}
-      <Content style={{ padding: "90px 20px", background: "#ffffffff" }}>
+      <Content style={{ padding: "100px 20px", background: "#ffffffff" }}>
         <Row justify="center">
           <Col xs={24} style={{ textAlign: "center", marginBottom: 50 }}>
             <motion.div

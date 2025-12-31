@@ -188,7 +188,7 @@ const GetInvolved = () => {
                 {donationAmounts.map((amt) =>
                   (<Button key={amt} type={amount === amt ? "primary" : "default"} 
                   onClick={() => setAmount(amt)} block={isMobile} > ₹{amt} </Button>))} 
-                  <Input placeholder="Other amount" style={{ width: isMobile ? "100%" : 140 }}
+                  <Input placeholder="Other amount" style={{ width: isMobile ? "100%" : 140 , padding: "8px"}}
                    type="number" onChange={(e) => setAmount(Number(e.target.value))} /> 
                    </Space> <br /> <br /> 
                    {/* Frequency */}

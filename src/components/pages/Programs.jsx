@@ -83,7 +83,7 @@ const storiesData = [
     {
         title: "Revathi’s Journey From A Small Village To Working For India’s Largest IT Company",
         description:
-            "Coming from a rural background, Revathi faced several challenges in accessing education. Through our education and skill development initiatives, she completed her studies and secured a job at a leading IT firm, becoming an inspiration for many young girls.",
+            "Coming from a rural background, Revathi overcame challenges through our education and skill development initiatives. Today, she works at a leading IT company, inspiring many young girls to pursue their dreams.",
         image: story1,
     },
     {
@@ -97,6 +97,7 @@ const storiesData = [
 
 const Programs = () => {
     const { colorPrimary, colorTextSecondary } = antdTheme.token;
+    const isMobile = typeof window !== "undefined" && window.matchMedia("(max-width: 576px)").matches;
 
     // Animation state + helpers
     const [visibleSections, setVisibleSections] = useState({});
@@ -159,7 +160,7 @@ const Programs = () => {
     return (
         <ConfigProvider theme={antdTheme}>
             <Layout>
-                <Content style={{ padding: "80px 20px", background: "#ffffff" }}>
+                <Content style={{ padding: "100px 20px", background: "#ffffff" }}>
 
                     {/* Header */}
                     <Row data-section="programs-header" justify="center" style={getSectionStyle("programs-header", {})}>
@@ -272,7 +273,7 @@ const Programs = () => {
 
 
                 {/* STORIES OF CHANGE SECTION */}
-                <Content>
+                <Content >
                     <Row data-section="stories" justify="center" style={getSectionStyle("stories", { marginTop: 120 })}>
                         <Col xs={24} md={20}>
 
@@ -300,7 +301,7 @@ const Programs = () => {
                             </div>
 
                             {/* Slider */}
-                            <Carousel autoplay dots>
+                            <Carousel autoplay dots style={{ padding: "20px" }}>
                                 {storiesData.map((story, index) => (
                                     <div key={index}>
                                         <Card
@@ -308,6 +309,7 @@ const Programs = () => {
                                                 borderRadius: 16,
                                                 overflow: "hidden",
                                                 boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
+
                                             }}
                                         >
                                             <Row gutter={0} align="middle">
@@ -317,10 +319,10 @@ const Programs = () => {
                                                     xs={24}
                                                     md={12}
                                                     style={{
-                                                        padding: "50px",
+                                                        padding: isMobile ? "24px" : "50px",
                                                         background: colorPrimary,
                                                         color: "#ffffff",
-                                                        minHeight: 380,
+                                                        minHeight: isMobile ? 220 : 380,
                                                         display: "flex",
                                                         flexDirection: "column",
                                                         justifyContent: "center",
@@ -361,9 +363,10 @@ const Programs = () => {
                                                         alt={story.title}
                                                         style={{
                                                             width: "100%",
-                                                            height: "100%",
+                                                            height: isMobile ? 220 : "100%",
                                                             objectFit: "cover",
-                                                            minHeight: 380,
+                                                            minHeight: isMobile ? 220 : 380,
+                                                            display: "block",
                                                         }}
                                                     />
                                                 </Col>
