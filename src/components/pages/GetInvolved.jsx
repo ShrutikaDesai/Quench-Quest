@@ -385,7 +385,7 @@ const GetInvolved = () => {
                   </Col>
                 </Row>
 
-                <Button type="primary" size="large" style={{ marginTop: 20 }}>Learn More & Connect</Button>
+                <Button type="primary" size="large" onClick={() => navigate('/contact')} style={{ marginTop: 20 }}>Learn More & Connect</Button>
               </div>
             </Card>
           </Col>

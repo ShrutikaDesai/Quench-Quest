@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector} from "react-redux";
 import { Layout, Typography, Button, Space, Row, Col, Divider } from 'antd';
-import { useLocation } from 'react-router-dom';
 import { HeartFilled, HeartOutlined, TeamOutlined, BookOutlined, SafetyOutlined, RiseOutlined, ToolOutlined, BulbOutlined } from '@ant-design/icons';
 import { motion } from "framer-motion";
 import antdTheme from '../../theme/antdTheme';
@@ -41,6 +41,7 @@ const newsData = [
 
 const Home = () => {
     const { colorPrimary, colorTextSecondary } = antdTheme.token;
+    const navigate = useNavigate();
     const location = useLocation();
     const dispatch = useDispatch();
      const { loading, success, error } = useSelector((state) => state.contact);
@@ -61,22 +62,6 @@ const Home = () => {
 
     };
 
-//     const handleSubmit = async (e) => {
-//     e.preventDefault();
-
-//     try {
-//         const resultAction = await dispatch(sendContactMessage(formData)).unwrap();
-
-//         // Reset form after successful submission
-//         setFormData({ name: "", email: "", subject: "", message: "" });
-
-//         // Display success message
-//         message.success(resultAction.message || "Message sent successfully!");
-//     } catch (err) {
-//         // Display error message
-//         message.error(err.message || "Failed to send message");
-//     }
-// };
 
 
     useEffect(() => {
@@ -147,15 +132,12 @@ const Home = () => {
                                         section?.scrollIntoView({ behavior: 'smooth' });
                                     }}
                                     style={{ marginTop: 20 }}>
-                                    <Button type="primary" size="large">
+                                    <Button type="primary" size="large" onClick={() => navigate('/get-involved')}>
                                         Donate Now
                                     </Button>
                                     <Button
                                         size="large"
-                                        onClick={() => {
-                                            const section = document.getElementById('contact');
-                                            section?.scrollIntoView({ behavior: 'smooth' });
-                                        }}
+                                       onClick={() => navigate('/get-involved')}
                                     >
                                         Volunteer With Us
                                     </Button>
@@ -597,10 +579,7 @@ const Home = () => {
                             >
                                 <Button
                                     size="large"
-                                    onClick={() => {
-                                        const section = document.getElementById('contact');
-                                        section?.scrollIntoView({ behavior: 'smooth' });
-                                    }}
+                                    onClick={() => navigate('/get-involved')}
                                     style={{
                                         background: '#ffffff',
                                         color: antdTheme.token.colorPrimary,
@@ -724,10 +703,7 @@ const Home = () => {
                                         <Button
                                             block
                                             size="large"
-                                            onClick={() => {
-                                                const section = document.getElementById('contact');
-                                                section?.scrollIntoView({ behavior: 'smooth' });
-                                            }}
+                                            onClick={() => navigate('/contact')}
                                             style={{
                                                 borderRadius: antdTheme.token.borderRadius,
                                                 fontWeight: 600,

@@ -9,11 +9,11 @@ const { useBreakpoint } = Grid;
 
 const menuItems = [
   { key: "home", label: <Link to="/">Home</Link> },
-  { key: "about", label:<Link to="/about">About</Link>},
-  { key: "programs", label:<Link to="/programs">Programs</Link> },
-  { key: "projects", label:<Link to="/projects">Projects & Impact</Link>},
-  { key: "involved", label:<Link to="/get-involved">Get Involved</Link> },
-  { key: "contact",  label:<Link to="/contact">Contact</Link> },
+  { key: "about", label: <Link to="/about">About</Link> },
+  { key: "programs", label: <Link to="/programs">Programs</Link> },
+  { key: "projects", label: <Link to="/projects">Projects & Impact</Link> },
+  { key: "involved", label: <Link to="/get-involved">Get Involved</Link> },
+  { key: "contact", label: <Link to="/contact">Contact</Link> },
 ];
 
 const Navbar = () => {
@@ -71,7 +71,7 @@ const Navbar = () => {
           )}
 
           {/* Desktop Donate */}
-          {!isMobile && <Button type="primary">Donate</Button>}
+          {!isMobile && <Button type="primary" onClick={() => navigate('/contact')}>Donate</Button>}
 
           {/* Mobile Hamburger (toggles open/close) */}
           {isMobile && (
@@ -98,7 +98,7 @@ const Navbar = () => {
           items={menuItems}
           onClick={() => setOpen(false)}
         />
-        <Button type="primary" block style={{ marginTop: 20 }}>
+        <Button type="primary" onClick={() => navigate('/contact')} block style={{ marginTop: 20 }}>
           Donate
         </Button>
       </Drawer>

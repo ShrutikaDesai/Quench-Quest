@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Layout, Typography, Row, Col, Card, Button, Tag, ConfigProvider, Divider } from "antd";
 import {
     BookOutlined,
@@ -96,6 +97,7 @@ const storiesData = [
 
 
 const Programs = () => {
+    const navigate = useNavigate();
     const { colorPrimary, colorTextSecondary } = antdTheme.token;
     const isMobile = typeof window !== "undefined" && window.matchMedia("(max-width: 576px)").matches;
 
@@ -262,7 +264,7 @@ const Programs = () => {
                                     </div>
 
                                     {/* CTA */}
-                                    <Button type="primary" block>
+                                    <Button type="primary" onClick={() => navigate('/contact')} block>
                                         Learn More / Support
                                     </Button>
                                 </Card>
@@ -343,6 +345,7 @@ const Programs = () => {
                                                     </Paragraph>
 
                                                     <Button
+                                                       onClick={() => navigate('/contact')}
                                                         style={{
                                                             marginTop: 20,
                                                             background: "#ffffff",
