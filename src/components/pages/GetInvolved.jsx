@@ -45,14 +45,39 @@ const GetInvolved = () => {
     typeof window !== "undefined" ? window.matchMedia("(max-width: 576px)").matches : false
   );
 
+  // Compute responsive heights for event cover images (mirrors previous CSS breakpoints)
+  const computeEventImageHeight = (width) => {
+    if (width >= 992) return 320;
+    if (width >= 768) return 260;
+    if (width >= 576) return 200;
+    return 160;
+  };
+
+  const [eventImgHeight, setEventImgHeight] = useState(
+    typeof window !== "undefined" ? computeEventImageHeight(window.innerWidth) : 320
+  );
+
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 576px)");
-    const handler = (e) => setIsMobile(e.matches);
+    const handler = (e) => {
+      setIsMobile(e.matches);
+      setEventImgHeight(computeEventImageHeight(window.innerWidth));
+    };
+
+    // Set initial height
+    setEventImgHeight(computeEventImageHeight(typeof window !== "undefined" ? window.innerWidth : 992));
+
     if (mq.addEventListener) mq.addEventListener("change", handler);
     else mq.addListener(handler);
+
+    // Also listen for resize to catch other breakpoints
+    const resizeHandler = () => setEventImgHeight(computeEventImageHeight(window.innerWidth));
+    window.addEventListener("resize", resizeHandler);
+
     return () => {
       if (mq.removeEventListener) mq.removeEventListener("change", handler);
       else mq.removeListener(handler);
+      window.removeEventListener("resize", resizeHandler);
     };
   }, []);
 
@@ -434,7 +459,7 @@ const GetInvolved = () => {
                           preview={false}
                           style={{
                             width: "100%",
-                            height: "auto",
+                            height: eventImgHeight,
                             objectFit: "cover",
                             borderTopLeftRadius: 16,
                             borderTopRightRadius: 16,

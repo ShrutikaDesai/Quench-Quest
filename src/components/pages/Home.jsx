@@ -790,6 +790,17 @@ const Home = () => {
                                     }}
                                 />
 
+                                <input
+                                    type="text"
+                                    placeholder="Subject"
+                                    style={{
+                                        padding: '12px 16px',
+                                        borderRadius: antdTheme.token.borderRadius,
+                                        border: `1px solid #d9d9d9`,
+                                        fontSize: 16,
+                                    }}
+                                />
+
                                 <textarea
                                     placeholder="Your Message"
                                     required

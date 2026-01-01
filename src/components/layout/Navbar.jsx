@@ -1,5 +1,5 @@
 import { Layout, Menu, Button, Drawer, Grid } from "antd";
-import { MenuOutlined } from "@ant-design/icons";
+import { MenuOutlined, CloseOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.jpg";
@@ -73,12 +73,13 @@ const Navbar = () => {
           {/* Desktop Donate */}
           {!isMobile && <Button type="primary">Donate</Button>}
 
-          {/* Mobile Hamburger */}
+          {/* Mobile Hamburger (toggles open/close) */}
           {isMobile && (
             <Button
               type="text"
-              icon={<MenuOutlined style={{ fontSize: 22 }} />}
-              onClick={() => setOpen(true)}
+              icon={open ? <CloseOutlined style={{ fontSize: 22 }} /> : <MenuOutlined style={{ fontSize: 22 }} />}
+              onClick={() => setOpen(!open)}
+              aria-label={open ? "Close menu" : "Open menu"}
               style={{ marginLeft: "auto" }}
             />
           )}

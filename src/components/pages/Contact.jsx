@@ -352,9 +352,13 @@ const Contact = () => {
                         <Input />
                       </Form.Item>
 
-                      <Form.Item label="Phone" name="phone">
+                      <Form.Item label="Subject" name="subject">
                         <Input />
                       </Form.Item>
+
+                      {/* <Form.Item label="Phone" name="phone">
+                        <Input />
+                      </Form.Item> */}
 
                       <Form.Item
                         label="Message"

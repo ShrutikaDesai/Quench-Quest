@@ -83,7 +83,7 @@ const storiesData = [
     {
         title: "Revathi’s Journey From A Small Village To Working For India’s Largest IT Company",
         description:
-            "Coming from a rural background, Revathi overcame challenges through our education and skill development initiatives. Today, she works at a leading IT company, inspiring many young girls to pursue their dreams.",
+            "From a rural background, Revathi overcame challenges through our education and skill programs. Today, she works at a leading IT company, inspiring young girls to dream big.",
         image: story1,
     },
     {
@@ -216,8 +216,8 @@ const Programs = () => {
                                         height: "100%",
                                         borderRadius: antdTheme.token.borderRadius,
                                         boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
-                                        maxWidth: 900,           // 👈 DECREASE CARD WIDTH
-                                        margin: "0 auto",        // 👈 SLIGHT LEFT SHIFT
+                                        maxWidth: 900,
+                                        margin: "0 auto",
                                     }}
                                 >
                                     {/* Icon */}

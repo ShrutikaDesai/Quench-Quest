@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Row, Col, Card, Button, Tag, Typography } from "antd";
 import { motion } from "framer-motion"; // <-- Framer Motion
 import story1 from "../../assets/story1.png";
@@ -74,6 +74,43 @@ const programFilters = [
 const Projects = () => {
   const [filter, setFilter] = useState("All");
 
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth <= 600 : false
+  );
+
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth <= 600);
+    window.addEventListener("resize", handler);
+    handler();
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+
+  const containerStyle = isMobile
+    ? { padding: "20px 12px 60px", background: "#ffffff" }
+    : { padding: "40px 100px 100px", background: "#ffffff" };
+
+  const cardStyle = {
+    borderRadius: 12,
+    overflow: "hidden",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    height: "auto",
+    minHeight: isMobile ? "auto" : 600,
+    boxShadow: "0 8px 24px rgba(0, 0, 0, 0.08)",
+  };
+
+  const bodyStyle = isMobile
+    ? { padding: "10px 10px 14px 10px" }
+    : { padding: "16px 16px 24px 16px" };
+
+  const coverStyle = {
+    width: "100%",
+    height: "auto",
+    maxHeight: isMobile ? 220 : 350,
+    objectFit: "cover",
+  };
+
   const filteredProjects =
     filter === "All"
       ? projectsData
@@ -137,35 +174,19 @@ const Projects = () => {
       </motion.div>
 
       {/* Project Cards Section */}
-      <div style={{ padding: "40px 100px 100px", background: "#ffffff" }}>
+      <div style={containerStyle}>
         <Row gutter={[24, 24]}>
           {filteredProjects.map((project, idx) => (
             <Col xs={24} sm={24} md={12} lg={8} key={idx}>
               <Card
                 hoverable
-                style={{
-                  borderRadius: 12,
-                  overflow: "hidden",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                  height: "auto",
-                  minHeight: 600,
-                  boxShadow: "0 8px 24px rgba(0, 0, 0, 0.08)",
-                }}
-                bodyStyle={{
-                  padding: "16px 16px 24px 16px",
-                }}
+                style={cardStyle}
+                bodyStyle={bodyStyle}
                 cover={
                   <img
                     src={project.image}
                     alt={project.title}
-                    style={{
-                      width: "100%",
-                      height: "auto",
-                      maxHeight: 350,
-                      objectFit: "cover",
-                    }}
+                    style={coverStyle}
                   />
                 }
               >
