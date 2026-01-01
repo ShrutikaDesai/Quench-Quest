@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector} from "react-redux";
 import { Layout, Typography, Button, Space, Row, Col, Divider } from 'antd';
 import { useLocation } from 'react-router-dom';
 import { HeartFilled, HeartOutlined, TeamOutlined, BookOutlined, SafetyOutlined, RiseOutlined, ToolOutlined, BulbOutlined } from '@ant-design/icons';
@@ -9,6 +10,7 @@ import CountUp from 'react-countup';
 import news1 from '../../assets/news1.jpg';
 import news2 from '../../assets/news2.jpg';
 import news3 from '../../assets/news3.jpg';
+import { sendContactMessage } from "../../slices/contactSlice";
 
 
 
@@ -40,6 +42,42 @@ const newsData = [
 const Home = () => {
     const { colorPrimary, colorTextSecondary } = antdTheme.token;
     const location = useLocation();
+    const dispatch = useDispatch();
+     const { loading, success, error } = useSelector((state) => state.contact);
+
+
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+    });
+
+
+    const handleSubmit = (e) => {
+           e.preventDefault();
+          
+        dispatch(sendContactMessage(formData));
+
+    };
+
+//     const handleSubmit = async (e) => {
+//     e.preventDefault();
+
+//     try {
+//         const resultAction = await dispatch(sendContactMessage(formData)).unwrap();
+
+//         // Reset form after successful submission
+//         setFormData({ name: "", email: "", subject: "", message: "" });
+
+//         // Display success message
+//         message.success(resultAction.message || "Message sent successfully!");
+//     } catch (err) {
+//         // Display error message
+//         message.error(err.message || "Failed to send message");
+//     }
+// };
+
 
     useEffect(() => {
         if (location.hash) {
@@ -102,22 +140,22 @@ const Home = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.4, duration: 0.6 }}
                             >
-                                <Space 
-                                size="large" 
-                                onClick={() => {
-                                                const section = document.getElementById('contact');
-                                                section?.scrollIntoView({ behavior: 'smooth' });
-                                            }}
-                                style={{ marginTop: 20 }}>
+                                <Space
+                                    size="large"
+                                    onClick={() => {
+                                        const section = document.getElementById('contact');
+                                        section?.scrollIntoView({ behavior: 'smooth' });
+                                    }}
+                                    style={{ marginTop: 20 }}>
                                     <Button type="primary" size="large">
                                         Donate Now
                                     </Button>
-                                    <Button 
-                                    size="large"
-                                    onClick={() => {
-                                                const section = document.getElementById('contact');
-                                                section?.scrollIntoView({ behavior: 'smooth' });
-                                            }}
+                                    <Button
+                                        size="large"
+                                        onClick={() => {
+                                            const section = document.getElementById('contact');
+                                            section?.scrollIntoView({ behavior: 'smooth' });
+                                        }}
                                     >
                                         Volunteer With Us
                                     </Button>
@@ -560,9 +598,9 @@ const Home = () => {
                                 <Button
                                     size="large"
                                     onClick={() => {
-                                                const section = document.getElementById('contact');
-                                                section?.scrollIntoView({ behavior: 'smooth' });
-                                            }}
+                                        const section = document.getElementById('contact');
+                                        section?.scrollIntoView({ behavior: 'smooth' });
+                                    }}
                                     style={{
                                         background: '#ffffff',
                                         color: antdTheme.token.colorPrimary,
@@ -761,15 +799,14 @@ const Home = () => {
                                     flexDirection: 'column',
                                     gap: 16,
                                 }}
-                                onSubmit={(e) => {
-                                    e.preventDefault();
-                                    alert('Form submitted!'); // Replace with actual submit logic
-                                }}
+                                onSubmit={handleSubmit}
                             >
                                 <input
                                     type="text"
                                     placeholder="Your Name"
                                     required
+                                    value={formData.name}
+                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                     style={{
                                         padding: '12px 16px',
                                         borderRadius: antdTheme.token.borderRadius,
@@ -782,6 +819,9 @@ const Home = () => {
                                     type="email"
                                     placeholder="Your Email"
                                     required
+                                    value={formData.email}
+                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+
                                     style={{
                                         padding: '12px 16px',
                                         borderRadius: antdTheme.token.borderRadius,
@@ -793,6 +833,8 @@ const Home = () => {
                                 <input
                                     type="text"
                                     placeholder="Subject"
+                                    value={formData.subject}
+                                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                                     style={{
                                         padding: '12px 16px',
                                         borderRadius: antdTheme.token.borderRadius,
@@ -805,6 +847,8 @@ const Home = () => {
                                     placeholder="Your Message"
                                     required
                                     rows={5}
+                                    value={formData.message}
+                                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                                     style={{
                                         padding: '12px 16px',
                                         borderRadius: antdTheme.token.borderRadius,
@@ -817,6 +861,7 @@ const Home = () => {
                                 <Button
                                     type="primary"
                                     htmlType="submit"
+                                    loading={loading}
                                     style={{
                                         padding: '12px 24px',
                                         borderRadius: antdTheme.token.borderRadius,

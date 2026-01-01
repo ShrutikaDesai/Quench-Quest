@@ -8,10 +8,12 @@ import Programs from "./components/pages/Programs";
 import Project from "./components/pages/Projects";
 import Contact from "./components/pages/Contact";
 import GetInvolved from "./components/pages/GetInvolved";
+import GlobalNotifier from "./globalNotifier";
 
 function App() {
   return (
     <BrowserRouter>
+      <GlobalNotifier />
       <Navbar />
 
       <Routes>

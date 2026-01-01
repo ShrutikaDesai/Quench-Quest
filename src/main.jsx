@@ -3,15 +3,19 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { ConfigProvider } from "antd";
 import App from "./App";
-import antdTheme from "./theme/antdTheme";
-
 import "antd/dist/reset.css";
+import antdTheme from "./theme/antdTheme";
+import store from "./store.js";
+import { Provider } from "react-redux";
+
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <ConfigProvider theme={antdTheme}>
-      <App />
+    <Provider store={store}>
+      <ConfigProvider theme={antdTheme}>
+        <App />
 
-    </ConfigProvider>
+      </ConfigProvider>
+    </Provider>
   </React.StrictMode>
 );

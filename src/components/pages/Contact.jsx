@@ -1,4 +1,5 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Layout,
   Typography,
@@ -11,6 +12,7 @@ import {
   Divider,
   ConfigProvider,
   Collapse,
+  message,
 } from "antd";
 import {
   EnvironmentOutlined,
@@ -20,9 +22,11 @@ import {
   TeamOutlined,
   SafetyOutlined,
 } from "@ant-design/icons";
-import { motion } from "framer-motion"; // <-- Import Framer Motion
-
+import { motion } from "framer-motion";
 import antdTheme from "../../theme/antdTheme";
+import { sendContactMessage, resetContactState } from "../../slices/contactSlice";
+
+
 
 const { Content } = Layout;
 const { Title, Paragraph } = Typography;
@@ -32,10 +36,25 @@ const { Panel } = Collapse;
 
 const Contact = () => {
   const { colorPrimary, colorTextSecondary } = antdTheme.token;
+  const dispatch = useDispatch();
+  const { loading, success, error } = useSelector((state) => state.contact);
+  const [form] = Form.useForm();
 
   const onFinish = (values) => {
-    console.log("Contact Form Data:", values);
+    dispatch(sendContactMessage(values));
   };
+
+  // React.useEffect(() => {
+  //   if (success) {
+  //     message.success(success);
+  //     form.resetFields();
+  //     dispatch(resetContactState());
+  //   }
+
+  //   if (error) {
+  //     message.error(error);
+  //   }
+  // }, [success, error, dispatch, form]);
 
   // Motion variants for sections
   const fadeInUp = {
@@ -47,7 +66,7 @@ const Contact = () => {
     hidden: {},
     visible: { transition: { staggerChildren: 0.2 } },
   };
-   // FAQ data
+  // FAQ data
   const faqs = [
     {
       question: "How can I donate to Quench Quest Social Foundation?",
@@ -335,7 +354,8 @@ const Contact = () => {
                       Send a Message
                     </Title>
 
-                    <Form layout="vertical" onFinish={onFinish}>
+                    <Form layout="vertical" onFinish={onFinish} form={form}>
+
                       <Form.Item
                         label="Name"
                         name="name"
@@ -368,9 +388,10 @@ const Contact = () => {
                         <TextArea rows={4} />
                       </Form.Item>
 
-                      <Button type="primary" block>
+                      <Button type="primary" htmlType="submit" block loading={loading}>
                         Submit
                       </Button>
+
                     </Form>
                   </Card>
                 </motion.div>
@@ -402,7 +423,7 @@ const Contact = () => {
           </motion.div>
 
 
-{/* FAQ SECTION */}
+          {/* FAQ SECTION */}
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -446,7 +467,7 @@ const Contact = () => {
               </Col>
             </Row>
           </motion.div>
-          
+
         </Content>
       </Layout>
     </ConfigProvider>
