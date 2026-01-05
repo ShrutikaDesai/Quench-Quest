@@ -1,6 +1,6 @@
 const antdTheme = {
   token: {
-    colorPrimary: "#2E7D6F",          // Muted green
+    colorPrimary: "#2E7D6F",          
     borderRadius: 10,
     fontFamily: "Inter, sans-serif",
 
