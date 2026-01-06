@@ -11,6 +11,14 @@ import news1 from '../../assets/news1.jpg';
 import news2 from '../../assets/news2.jpg';
 import news3 from '../../assets/news3.jpg';
 import { sendContactMessage } from "../../slices/contactSlice";
+import { fetchHomeHero,  updateHomeHeroData } from '../../slices/homeSlice';
+import {fetchCoreObjective, updateCoreObjectiveData} from "../../slices/coreobjectiveSlice";
+import {fetchHomePrograms,updateHomeProgramsData} from "../../slices/programsHomeSlice";
+import { fetchWhoWeAre, updateWhoWeAreData } from "../../slices/whoWeAreSlice";
+import { fetchNews, updateNewsData } from "../../slices/newsSlice";
+import { fetchImpact, updateImpactData } from "../../slices/impactSlice";
+
+
 
 
 
@@ -44,24 +52,144 @@ const Home = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const dispatch = useDispatch();
-     const { loading, success, error } = useSelector((state) => state.contact);
-
+    const { hero, updated } = useSelector((state) => state.home);
+    const { loading, success, error } = useSelector((state) => state.contact);
+    const { objective } = useSelector((state) => state.objectives);
+    const { programsList, programsUpdated } = useSelector((state) => state.programsHome);
+    const { who, updated: whoUpdated } = useSelector((state) => state.whoWeAre);
+    const { newsList, newsUpdated } = useSelector((state) => state.news);
+    const { impactList, updated: impactUpdated } = useSelector((state) => state.impact);
 
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         subject: "",
         message: "",
+
     });
+
 
 
     const handleSubmit = (e) => {
            e.preventDefault();
           
         dispatch(sendContactMessage(formData));
+           };
 
-    };
+    // All Dispatch
+  
+  // Fetch hero on page load
+  useEffect(() => {
+    dispatch(fetchHomeHero());
+  }, [dispatch]);
 
+  // Call PUT automatically once after hero is loaded
+  useEffect(() => {
+    if (hero?.id && !updated) {
+      const heroFormData = new FormData();
+      heroFormData.append("title", hero.title);
+      heroFormData.append("subtitle", hero.subtitle);
+      heroFormData.append("primary_button", hero.primary_button);
+      heroFormData.append("secondary_button", hero.secondary_button);
+
+
+      // Only append if hero.image is a File (optional)
+      if (hero.image instanceof File) {
+        heroFormData.append("image", hero.image);
+      }
+
+      dispatch(updateHomeHeroData({ id: hero.id, data: heroFormData }));
+    }
+  }, [hero, updated, dispatch]);
+
+
+useEffect(() => {
+  if (objective?.id && !objective.updated) {  // check updated flag
+    const objectiveFormData = new FormData();
+       objectiveFormData.append("section", objective.section); 
+    objectiveFormData.append("description", objective.description);
+
+    dispatch(updateCoreObjectiveData({ id: objective.id, data: objectiveFormData }));
+  }
+}, [objective?.id, objective?.updated, dispatch]);
+
+
+  useEffect(() => {
+  dispatch(fetchCoreObjective());
+}, [dispatch]);
+
+
+useEffect(() => {
+  dispatch(fetchHomePrograms());
+}, [dispatch]);
+
+// Fetch latest news on load
+useEffect(() => {
+  dispatch(fetchNews());
+}, [dispatch]);
+
+// Optional: automatically PUT news item with id=2 once after loaded (safe append)
+useEffect(() => {
+  const item = (newsList || []).find((n) => n?.id === 2);
+  if (item && !newsUpdated) {
+    const fd = new FormData();
+    const isValid = (v) => v !== undefined && v !== null && v !== "" && v !== "null" && v !== "undefined";
+    if (isValid(item.title)) fd.append("title", item.title);
+    if (isValid(item.sub_description)) fd.append("sub_description", item.sub_description);
+    if (isValid(item.description)) fd.append("description", item.description);
+    if (isValid(item.date)) fd.append("date", item.date);
+    console.debug("Dispatching updateNewsData for id=2", { preview: { title: item.title } });
+    dispatch(updateNewsData({ id: item.id, data: fd }));
+  }
+}, [newsList, newsUpdated, dispatch]);
+
+// Fetch who-we-are on load
+useEffect(() => {
+  dispatch(fetchWhoWeAre());
+}, [dispatch]);
+
+// Call PUT automatically once after who is loaded (same pattern as other sections)
+useEffect(() => {
+  if (who?.id && !whoUpdated) {
+    const whoFormData = new FormData();
+    if (who.section != null) whoFormData.append("section", who.section);
+    if (who.description != null) whoFormData.append("description", who.description);
+    dispatch(updateWhoWeAreData({ id: who.id, data: whoFormData }));
+  }
+}, [who, whoUpdated, dispatch]);
+
+// Fetch impact on load
+useEffect(() => {
+  dispatch(fetchImpact());
+}, [dispatch]);
+
+// Optional: automatically PUT impact item once (id likely 1)
+useEffect(() => {
+  // pick impact item to update: prefer id === 1, otherwise first item
+  const impactItem = (impactList || []).find((it) => Number(it?.id) === 1) || (impactList && impactList[0]);
+  console.debug("impact PUT effect run", { hasItem: !!impactItem, impactUpdated, item: impactItem });
+  if (!impactItem || impactUpdated) return;
+
+  const id = impactItem.id;
+  const fd = new FormData();
+  const isValid = (v) => v !== undefined && v !== null && v !== "" && v !== "null" && v !== "undefined";
+  let appended = false;
+
+  // backend likely expects 'value' and optionally 'label' for each impact item
+  if (isValid(impactItem.value)) { fd.append("value", impactItem.value); appended = true; }
+  if (isValid(impactItem.label)) { fd.append("label", impactItem.label); appended = true; }
+
+  if (!appended) {
+    console.debug("No valid impact fields to PUT - skipping auto update", impactItem);
+    return;
+  }
+
+  console.debug("Dispatching updateImpactData", { id, preview: impactItem });
+  dispatch(updateImpactData({ id, data: fd })).then((res) => {
+    if (res.error) console.error("updateImpactData failed:", res.error);
+    else console.debug("updateImpactData success:", res.payload);
+  });
+}, [impactList, impactUpdated, dispatch]);
 
 
     useEffect(() => {
@@ -99,50 +227,50 @@ const Home = () => {
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.8, ease: "easeOut" }}
                         >
-                            <Title level={2} style={{ lineHeight: 1.2 }}>
-                                <span style={{ fontWeight: 'bold', fontSize: 'clamp(32px, 5vw, 48px)' }}>
-                                    Empowering Lives.
-                                </span>
-                                <br />
-                                <span
-                                    style={{
-                                        fontWeight: 'bold',
-                                        fontSize: 'clamp(24px, 3vw, 32px)',
-                                        color: colorTextSecondary,
-                                    }}
-                                >
-                                    Building Stronger Communities.
-                                </span>
-                            </Title>
+                           <Title level={2} style={{ lineHeight: 1.2 }}>
+  <span style={{ fontWeight: "bold", fontSize: "clamp(32px, 5vw, 48px)" }}>
+    {hero?.title}
+  </span>
+  <br />
+  <span
+    style={{
+      fontWeight: "bold",
+      fontSize: "clamp(24px, 3vw, 32px)",
+      color: colorTextSecondary,
+    }}
+  >
+    {hero?.subtitle }
+  </span>
+</Title>
 
-                            <Paragraph style={{ fontSize: 16, color: colorTextSecondary }}>
-                                We are a social welfare organization dedicated to uplifting underprivileged children,
-                                women, and economically weaker sections of society.
-                            </Paragraph>
 
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.4, duration: 0.6 }}
-                            >
-                                <Space
-                                    size="large"
-                                    onClick={() => {
-                                        const section = document.getElementById('contact');
-                                        section?.scrollIntoView({ behavior: 'smooth' });
-                                    }}
-                                    style={{ marginTop: 20 }}>
-                                    <Button type="primary" size="large" onClick={() => navigate('/get-involved')}>
-                                        Donate Now
-                                    </Button>
-                                    <Button
-                                        size="large"
-                                       onClick={() => navigate('/get-involved')}
-                                    >
-                                        Volunteer With Us
-                                    </Button>
-                                </Space>
-                            </motion.div>
+                          <Paragraph style={{ fontSize: 16, color: colorTextSecondary }}>
+  {hero?.description }
+</Paragraph>
+
+                       <motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.4, duration: 0.6 }}
+>
+  <Space size="large" style={{ marginTop: 20 }}>
+    <Button
+      type="primary"
+      size="large"
+      onClick={() => navigate('/get-involved')}
+    >
+      {hero?.primary_button || "Donate Now"}
+    </Button>
+
+    <Button
+      size="large"
+      onClick={() => navigate('/get-involved')}
+    >
+      {hero?.secondary_button || "Volunteer With Us"}
+    </Button>
+  </Space>
+</motion.div>
+
                         </motion.div>
                     </Col>
 
@@ -153,15 +281,20 @@ const Home = () => {
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.8, ease: "easeOut" }}
                         >
-                            <img
-                                src={heroImage}
-                                alt="Empowering kids"
-                                style={{
-                                    width: '100%',
-                                    borderRadius: 12,
-                                    boxShadow: '0 20px 40px rgba(0,0,0,0.08)',
-                                }}
-                            />
+                           <img
+  src={
+    hero?.image
+      ? `http://192.168.0.111:8000${hero.image}`
+      : heroImage
+  }
+  alt="Empowering kids"
+  style={{
+    width: "100%",
+    borderRadius: 12,
+    boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
+  }}
+/>
+
                         </motion.div>
                     </Col>
                 </Row>
@@ -182,7 +315,11 @@ const Home = () => {
                             viewport={{ once: true }}
                         >
                             <Title level={2} style={{ marginBottom: 20 }}>
-                                WHO <span style={{ color: colorPrimary }}>WE ARE ?</span>
+                                {(who?.section || "WHO WE ARE ?").split(' ').map((word, index) => (
+                                    <span key={index} style={{ color: index > 0 ? antdTheme.token.colorPrimary : undefined }}>
+                                        {word}{" "}
+                                    </span>
+                                ))}
                             </Title>
 
                             <Divider plain style={{ margin: '30px 0' }}>
@@ -218,8 +355,7 @@ const Home = () => {
                                     lineHeight: 1.7,
                                 }}
                             >
-                                “Quench Quest Social Foundation is dedicated to empowering marginalized
-                                communities through education, health awareness, and grassroots-driven action”
+                                {who?.description ?? "Quench Quest Social Foundation is dedicated to empowering marginalized communities through education, health awareness, and grassroots-driven action"}
                             </Paragraph>
                         </motion.div>
 
@@ -241,9 +377,16 @@ const Home = () => {
                             transition={{ duration: 0.7, ease: 'easeOut' }}
                             viewport={{ once: true }}
                         >
-                            <Title level={2} style={{ marginBottom: 20 }}>
-                                OUR <span style={{ color: antdTheme.token.colorPrimary }}>CORE OBJECTIVES</span>
-                            </Title>
+ <Title level={2} style={{ marginBottom: 20 }}>
+    {objective?.section?.split(' ').map((word, index) => (
+        <span
+            key={index}
+            style={{ color: index > 0 ? antdTheme.token.colorPrimary : undefined }}
+        >
+            {word}{" "}
+        </span>
+    ))}
+</Title>
 
                             <Divider plain style={{ margin: '30px 0' }}>
                                 <span
@@ -270,20 +413,17 @@ const Home = () => {
                             viewport={{ once: true }}
                         >
                             <Paragraph
-                                style={{
-                                    fontSize: 17,
-                                    color: antdTheme.token.colorTextSecondary,
-                                    maxWidth: 900,
-                                    margin: '0 auto',
-                                    lineHeight: 1.8,
-                                }}
-                            >
-                                Quench Quest Social Foundation is committed to uplifting marginalized and
-                                economically weaker communities across rural, remote, and urban slum areas.
-                                Our core objectives focus on promoting education, improving health awareness,
-                                strengthening livelihoods, eliminating social inequalities, and fostering
-                                community participation to create sustainable and dignified lives.
-                            </Paragraph>
+  style={{
+    fontSize: 17,
+    color: antdTheme.token.colorTextSecondary,
+    maxWidth: 900,
+    margin: "0 auto",
+    lineHeight: 1.8,
+  }}
+>
+  {objective?.description }
+</Paragraph>
+
                         </motion.div>
 
                     </Col>
@@ -324,7 +464,7 @@ const Home = () => {
                                 </span>
                             </Divider>
                         </motion.div>
-                    </Col>
+                    </Col >
                 </Row>
 
                 <Row
@@ -332,76 +472,59 @@ const Home = () => {
                     justify="center"
                     style={{ maxWidth: 1200, margin: '0 auto' }}
                 >
-                    {[
-                        {
-                            title: 'Education & Child Welfare',
-                            desc: 'Providing quality education, fostering safe environments, and ensuring holistic development for children from underprivileged backgrounds.',
-                            icon: <BookOutlined />,
-                        },
-                        {
-                            title: 'Health Assistance & Awareness',
-                            desc: 'Delivering essential medical aid, promoting health education, and improving access to healthcare for women and vulnerable communities.',
-                            icon: <HeartOutlined />,
-                        },
-                        {
-                            title: 'Livelihood & Skill Training',
-                            desc: 'Empowering adults and youth with vocational skills, entrepreneurship training, and resources for sustainable livelihoods.',
-                            icon: <ToolOutlined />,
-                        },
-                        {
-                            title: 'Anti-Child Labour & Advocacy',
-                            desc: 'Working to eradicate child labor, raise awareness about harmful practices, and advocate for children’s rights and protection.',
-                            icon: <BulbOutlined />,
-                        },
-                    ].map((program, index) => (
-                        <Col xs={24} sm={12} lg={6} key={index}>
-                            <motion.div
-                                initial={{ opacity: 0, y: 40 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.2, duration: 0.7, ease: 'easeOut' }}
-                                viewport={{ once: true }}
-                            >
-                                <div
-                                    style={{
-                                        background: '#ffffff',
-                                        borderRadius: antdTheme.token.borderRadius,
-                                        padding: '32px 24px',
-                                        height: '100%',
-                                        minHeight: 325,
-                                        boxShadow: '0 8px 24px rgba(0,0,0,0.05)',
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        justifyContent: 'space-between',
-                                    }}
-                                >
-                                    {/* Icon */}
-                                    <div
-                                        style={{
-                                            width: 48,
-                                            height: 48,
-                                            borderRadius: '50%',
-                                            background: `${antdTheme.token.colorPrimary}15`,
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            fontSize: 22,
-                                            color: antdTheme.token.colorPrimary,
-                                            marginBottom: 20,
-                                        }}
-                                    >
-                                        {program.icon}
-                                    </div>
-
-                                    {/* Title */}
-                                    <Title level={4} style={{ marginBottom: 12 }}>
+                    { (programsList || []).map((program, index) => (
+                        <Col xs={24} sm={12} lg={6} key={program.id ?? index}>
+                             <motion.div
+                                 initial={{ opacity: 0, y: 40 }}
+                                 whileInView={{ opacity: 1, y: 0 }}
+                                 transition={{ delay: index * 0.2, duration: 0.7, ease: 'easeOut' }}
+                                 viewport={{ once: true }}
+                             >
+                                 <div
+                                     style={{
+                                         background: '#ffffff',
+                                         borderRadius: antdTheme.token.borderRadius,
+                                         padding: '32px 24px',
+                                         height: '100%',
+                                         minHeight: 325,
+                                         boxShadow: '0 8px 24px rgba(0,0,0,0.05)',
+                                         display: 'flex',
+                                         flexDirection: 'column',
+                                         justifyContent: 'space-between',
+                                     }}
+                                 >
+                                     {/* Icon */}
+                                     <div
+                                         style={{
+                                             width: 48,
+                                             height: 48,
+                                             borderRadius: '50%',
+                                             background: `${antdTheme.token.colorPrimary}15`,
+                                             display: 'flex',
+                                             alignItems: 'center',
+                                             justifyContent: 'center',
+                                             fontSize: 22,
+                                             color: antdTheme.token.colorPrimary,
+                                             marginBottom: 20,
+                                         }}
+                                     >
+                                        {React.createElement([BookOutlined, HeartOutlined, ToolOutlined, BulbOutlined][index % 4])}
+                                     </div>
+ 
+                                     {/* Title */}
+                                     <Title level={4} style={{ marginBottom: 12 }}>
                                         {program.title}
-                                    </Title>
-
-                                    {/* Description */}
+                                     </Title>
+ 
+                                     {/* Description */}
                                     <Paragraph style={{ color: antdTheme.token.colorTextSecondary }}>
-                                        {program.desc}
+                                        { (program.sub_description && program.sub_description !== "null" && program.sub_description !== "undefined")
+                                            ? program.sub_description
+                                            : (program.description && program.description !== "null" && program.description !== "undefined")
+                                                ? program.description
+                                                : "" }
                                     </Paragraph>
-
+ 
                                     {/* Learn More */}
                                     {/* <Button
                                         type="link"
@@ -438,8 +561,12 @@ const Home = () => {
                                 </Title> */}
 
                             <Title level={2} style={{ marginBottom: 20 }}>
-                                OUR <span style={{ color: colorPrimary }}>IMPACT IN NUMBERS</span>
-                            </Title>
+                        { (impactList?.[0]?.section || "OUR IMPACT IN NUMBERS").split(' ').map((word, index) => (
+                            <span key={index} style={{ color: index > 0 ? colorPrimary : undefined }}>
+                                {word}{" "}
+                            </span>
+                        ))}
+                    </Title>
 
                             <Divider plain style={{ margin: '30px 0' }}>
                                 <span
@@ -467,31 +594,25 @@ const Home = () => {
                     justify="center"
                     style={{ maxWidth: 1200, margin: '0 auto' }}
                 >
-                    {[
-                        {
-                            count: 45000,
-                            suffix: '+',
-                            label: 'Children & Women Supported',
-                        },
-                        {
-                            count: 8500,
-                            suffix: '+',
-                            label: 'Skill & Awareness Programs Conducted',
-                        },
-                        {
-                            count: 520,
-                            suffix: '+',
-                            label: 'Rural & Urban Communities Reached',
-                        },
-                    ].map((item, index) => (
-                        <Col xs={24} sm={8} key={index} style={{ textAlign: 'center' }}>
+                    {(impactList || []).map((item, index) => {
+                        // parse numeric part and suffix when value like "45,000+"
+                        const val = String(item.value ?? "");
+                        const match = val.match(/^([\d,]+)/);
+                        let num = null;
+                        let suffix = "";
+                        if (match) {
+                            num = Number(match[1].replace(/,/g, ""));
+                            suffix = val.replace(match[1], "");
+                        }
+                        return (
+                        <Col xs={24} sm={8} key={item.id ?? index} style={{ textAlign: 'center' }}>
                             <motion.div
                                 initial={{ opacity: 0, y: 50, scale: 0.95 }}
                                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                                 transition={{ delay: index * 0.3, duration: 0.8, ease: 'easeOut' }}
                                 viewport={{ once: true }}
                             >
-                                {/* Animated Count */}
+                                {/* Animated Count or raw value */}
                                 <Title
                                     level={1}
                                     style={{
@@ -501,13 +622,14 @@ const Home = () => {
                                         marginBottom: 10,
                                     }}
                                 >
-                                    <CountUp
-                                        start={0}
-                                        end={item.count}
-                                        duration={2.5}
-                                        separator=","
-                                    />
-                                    {item.suffix}
+                                    {num !== null ? (
+                                        <>
+                                            <CountUp start={0} end={num} duration={2.5} separator="," />
+                                            {suffix}
+                                        </>
+                                    ) : (
+                                        val || ""
+                                    )}
                                 </Title>
 
                                 {/* Label */}
@@ -522,8 +644,9 @@ const Home = () => {
                                 </Paragraph>
                             </motion.div>
                         </Col>
-                    ))}
-                </Row>
+                        );
+                    })}
+                 </Row>
             </Content>
 
 
@@ -646,7 +769,7 @@ const Home = () => {
                     justify="center"
                     style={{ maxWidth: 1200, margin: '0 auto' }}
                 >
-                    {newsData.map((news, index) => (
+                    {(newsList && newsList.length ? newsList : newsData).map((news, index) => (
                         <Col xs={24} md={8} key={index}>
                             <motion.div
                                 initial={{ opacity: 0, y: 50 }}
@@ -668,7 +791,7 @@ const Home = () => {
                                 >
                                     {/* Image */}
                                     <img
-                                        src={news.image}
+                                        src={news.image || news.image_url || news.image_url_small || news.img}
                                         alt={news.title}
                                         style={{
                                             width: '100%',
@@ -686,7 +809,7 @@ const Home = () => {
                                                 marginBottom: 8,
                                             }}
                                         >
-                                            {news.date}
+                                            {news.date || news.publish_date || ""}
                                         </Paragraph>
 
                                         <Title level={4} style={{ marginBottom: 12 }}>
@@ -694,7 +817,11 @@ const Home = () => {
                                         </Title>
 
                                         <Paragraph style={{ color: antdTheme.token.colorTextSecondary }}>
-                                            {news.desc}
+                                            { (news.sub_description && news.sub_description !== "null" && news.sub_description !== "undefined")
+                                                ? news.sub_description
+                                                : (news.description && news.description !== "null" && news.description !== "undefined")
+                                                    ? news.description
+                                                    : news.desc || "" }
                                         </Paragraph>
                                     </div>
 
