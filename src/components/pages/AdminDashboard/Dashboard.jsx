@@ -1,212 +1,138 @@
-import React, { useState } from "react";
-import { Layout, Menu, Breadcrumb, Card, Row, Col, Table, Tag, Button } from "antd";
+import React from "react";
+import { Row, Col, Card, Typography, Table, Tag } from "antd";
 import {
-  PieChartOutlined,
-  FileTextOutlined,
-  TeamOutlined,
+  BookOutlined,
+  ProjectOutlined,
   MailOutlined,
+  TeamOutlined,
+  DollarOutlined,
 } from "@ant-design/icons";
 
-const { Header, Content, Sider } = Layout;
+const { Title, Text } = Typography;
 
 const Dashboard = () => {
-  // Dummy data for tables
-  const programsData = [
-    {
-      key: "1",
-      name: "Education & Child Welfare",
-      activities: "School support, Workshops, Nutritional programs",
-      beneficiaries: ["Children", "SC", "ST"],
-    },
-    {
-      key: "2",
-      name: "Women & Maternal Health",
-      activities: "Health camps, Nutrition, Hygiene awareness",
-      beneficiaries: ["Women", "Expectant Mothers", "Rural Communities"],
-    },
+  const stats = [
+    { title: "Total Programs", value: 8, icon: <BookOutlined /> },
+    { title: "Total Projects", value: 14, icon: <ProjectOutlined /> },
+    { title: "Contact Requests", value: 36, icon: <MailOutlined /> },
+    { title: "Active Volunteers", value: 52, icon: <TeamOutlined /> },
+    { title: "Total Donations", value: "₹1,25,000", icon: <DollarOutlined /> },
   ];
 
-  const projectsData = [
-    {
-      key: "1",
-      name: "Rural Education Initiative",
-      category: "Education",
-      tags: ["Rural"],
-    },
-    {
-      key: "2",
-      name: "Vocational Training for Youth",
-      category: "Skill Training",
-      tags: ["Urban Slum"],
-    },
+  const recentContacts = [
+    { key: "1", name: "Amit Patil", email: "amit@gmail.com", subject: "Volunteer Request", status: "New" },
+    { key: "2", name: "Sneha Kulkarni", email: "sneha@gmail.com", subject: "Donation Query", status: "Read" },
+    { key: "3", name: "Rahul Desai", email: "rahul@gmail.com", subject: "Training Support", status: "Resolved" },
   ];
 
-  const contactData = [
-    {
-      key: "1",
-      name: "John Doe",
-      email: "john@example.com",
-      message: "I want to know more about your programs",
-      status: "Unread",
-    },
-    {
-      key: "2",
-      name: "Jane Smith",
-      email: "jane@example.com",
-      message: "Interested in volunteering",
-      status: "Read",
-    },
-  ];
-
-  // Table columns
-  const programsColumns = [
-    { title: "Program Name", dataIndex: "name", key: "name" },
-    { title: "Activities", dataIndex: "activities", key: "activities" },
-    {
-      title: "Beneficiaries",
-      dataIndex: "beneficiaries",
-      key: "beneficiaries",
-      render: (tags) => (
-        <>
-          {tags.map((tag) => (
-            <Tag color="green" key={tag}>
-              {tag}
-            </Tag>
-          ))}
-        </>
-      ),
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: () => <Button type="primary">Edit</Button>,
-    },
-  ];
-
-  const projectsColumns = [
-    { title: "Project Name", dataIndex: "name", key: "name" },
-    { title: "Category", dataIndex: "category", key: "category" },
-    {
-      title: "Tags",
-      dataIndex: "tags",
-      key: "tags",
-      render: (tags) => (
-        <>
-          {tags.map((tag) => (
-            <Tag color="blue" key={tag}>
-              {tag}
-            </Tag>
-          ))}
-        </>
-      ),
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: () => <Button type="primary">Edit</Button>,
-    },
-  ];
-
-  const contactColumns = [
-    { title: "Name", dataIndex: "name", key: "name" },
-    { title: "Email", dataIndex: "email", key: "email" },
-    { title: "Message", dataIndex: "message", key: "message" },
+  const columns = [
+    { title: "Name", dataIndex: "name" },
+    { title: "Email", dataIndex: "email" },
+    { title: "Subject", dataIndex: "subject" },
     {
       title: "Status",
       dataIndex: "status",
-      key: "status",
-      render: (status) => (
-        <Tag color={status === "Unread" ? "red" : "green"}>{status}</Tag>
-      ),
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: () => <Button type="primary">Mark as Read</Button>,
+      render: (status) => {
+        let color = "green";
+        if (status === "New") color = "red";
+        if (status === "Read") color = "orange";
+        return <Tag color={color}>{status}</Tag>;
+      },
     },
   ];
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sider collapsible>
-        <div
-          style={{
-            height: 32,
-            margin: 16,
-            background: "rgba(255, 255, 255, 0.3)",
-            textAlign: "center",
-            color: "#fff",
-            fontWeight: "bold",
-          }}
-        >
-          Admin
-        </div>
-        <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
-          <Menu.Item key="1" icon={<PieChartOutlined />}>
-            Dashboard
-          </Menu.Item>
-          <Menu.Item key="2" icon={<FileTextOutlined />}>
-            Programs
-          </Menu.Item>
-          <Menu.Item key="3" icon={<FileTextOutlined />}>
-            Projects & Impact
-          </Menu.Item>
-          <Menu.Item key="4" icon={<TeamOutlined />}>
-            Focus Areas
-          </Menu.Item>
-          <Menu.Item key="5" icon={<MailOutlined />}>
-            Contact Messages
-          </Menu.Item>
-        </Menu>
-      </Sider>
-      <Layout className="site-layout">
-        <Header
-          className="site-layout-background"
-          style={{ padding: 0, textAlign: "center", color: "#fff" }}
-        >
-          <h2 style={{ color: "#fff" }}>Quench Quest Admin Dashboard</h2>
-        </Header>
-        <Content style={{ margin: "16px" }}>
-          <Row gutter={[16, 16]}>
-            <Col span={6}>
-              <Card title="Total Programs" bordered={false}>
-                10
-              </Card>
-            </Col>
-            <Col span={6}>
-              <Card title="Total Projects" bordered={false}>
-                8
-              </Card>
-            </Col>
-            <Col span={6}>
-              <Card title="Focus Areas" bordered={false}>
-                5
-              </Card>
-            </Col>
-            <Col span={6}>
-              <Card title="New Messages" bordered={false}>
-                3
-              </Card>
-            </Col>
-          </Row>
+    <div>
+      <Title level={3}>Dashboard </Title>
 
-          {/* Programs Table */}
-          <Card title="Manage Programs" style={{ marginTop: 16 }}>
-            <Table dataSource={programsData} columns={programsColumns} />
-          </Card>
+      {/* ================= STAT CARDS ================= */}
+      <Row gutter={[16, 16]} style={{ marginTop: 24 }}>
+        {stats.map((item, index) => (
+          <Col key={index} xs={24} sm={12} md={8} lg={4}>
+            <Card
+              bordered={false}
+              hoverable
+              bodyStyle={{
+                height: 210,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 20,
+              }}
+              style={{
+                borderRadius: 16,
+                boxShadow: "0 6px 18px rgba(0, 0, 0, 0.08)",
+                transition: "all 0.3s ease",
+              }}
+            >
+              {/* ICON */}
+              <div
+                style={{
+                  width: 64,
+                  height: 64,
+                  borderRadius: "50%",
+                  background: "rgba(46,125,111,0.15)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 26,
+                  color: "#2E7D6F",
+                }}
+              >
+                {item.icon}
+              </div>
 
-          {/* Projects Table */}
-          <Card title="Manage Projects & Impact" style={{ marginTop: 16 }}>
-            <Table dataSource={projectsData} columns={projectsColumns} />
-          </Card>
+              {/* TITLE */}
+              <Text
+                style={{
+                  marginTop: 14,
+                  fontSize: 14,
+                  color: "#555",
+                  fontWeight: 500,
+                  textAlign: "center",
+                }}
+              >
+                {item.title}
+              </Text>
 
-          {/* Contact Messages Table */}
-          <Card title="Contact Messages" style={{ marginTop: 16 }}>
-            <Table dataSource={contactData} columns={contactColumns} />
+              {/* COUNT */}
+              <Title
+                level={3}
+                style={{
+                  marginTop: 8,
+                  marginBottom: 0,
+                  color: "#001f3f",
+                }}
+              >
+                {item.value}
+              </Title>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+
+      {/* ================= TABLE ================= */}
+      <Row gutter={[16, 16]} style={{ marginTop: 40 }}>
+        <Col xs={24}>
+          <Card
+            title="Recent Contact Requests"
+            bordered={false}
+            style={{
+              borderRadius: 16,
+              boxShadow: "0 6px 18px rgba(0, 0, 0, 0.08)",
+            }}
+          >
+            <Table
+              columns={columns}
+              dataSource={recentContacts}
+              pagination={false}
+              scroll={{ x: "max-content" }}
+            />
           </Card>
-        </Content>
-      </Layout>
-    </Layout>
+        </Col>
+      </Row>
+    </div>
   );
 };
 

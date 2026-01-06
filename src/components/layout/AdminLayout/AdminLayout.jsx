@@ -1,35 +1,45 @@
-// src/pages/admin/AdminLayout.js
 import React, { useState } from "react";
-import { Layout, Menu, Drawer, Button, Grid, Breadcrumb, Avatar, Dropdown, Typography } from "antd";
+import {
+  Layout,
+  Menu,
+  Drawer,
+  Button,
+  Grid,
+  Breadcrumb,
+  Avatar,
+  Typography,
+} from "antd";
 import {
   UserOutlined,
-  MessageOutlined,
   DashboardOutlined,
   MenuOutlined,
   LogoutOutlined,
-  QuestionCircleOutlined,
+  FileTextOutlined,
 } from "@ant-design/icons";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Outlet } from "react-router-dom";
 
 const { Header, Sider, Content } = Layout;
 const { useBreakpoint } = Grid;
 const { Text } = Typography;
 
-export default function AdminLayout({ children }) {
+export default function AdminLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const screens = useBreakpoint();
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  // Get username from localStorage (or change this to your auth state)
   const username = localStorage.getItem("username") || "Admin";
 
-  // Map pathnames to breadcrumb names
+  /* ===================== BREADCRUMB ===================== */
   const breadcrumbNameMap = {
     "/admin/dashboard": "Dashboard",
-    "/admin/users": "User List",
-
+    "/admin/homesectionlist": "Home Page Sections",
+    "/admin/aboutsectionlist": "About Page Sections",
+    "/admin/programsectionlist": "Program Page Sections",
+    "/admin/projectsectionlist": "Project & Impact List",
   };
+
+
 
   // Build breadcrumb items
   const pathSnippets = location.pathname.split("/").filter((i) => i);
@@ -45,52 +55,77 @@ export default function AdminLayout({ children }) {
     ...extraBreadcrumbItems.slice(1),
   ];
 
+
+  /* ===================== MENU ITEMS ===================== */
   const menuItems = [
     {
-      key: "1",
-      icon: <DashboardOutlined style={{ color: "white" }} />,
+      key: "/admin/dashboard",
+      icon: <DashboardOutlined />,
       label: "Dashboard",
       onClick: () => navigate("/admin/dashboard"),
-      style: { marginBottom: "10px" },
     },
     {
-      key: "2",
-      icon: <UserOutlined style={{ color: "white" }} />,
-      label: "User List",
-      onClick: () => navigate("/admin/users"),
-      style: { marginBottom: "10px" },
-    },
- 
+      key: "content",
+      icon: <FileTextOutlined />,
+      label: "Content Management",
+      children: [
+        {
+          key: "/admin/homesectionlist",
+          label: "Home Page Section List",
+          onClick: () => navigate("/admin/homesectionlist"),
+        },
+        {
+          key: "/admin/aboutsectionlist",
+          label: "About Page Section List",
+          onClick: () => navigate("/admin/aboutsectionlist"),
+        },
+        {
+          key: "/admin/programssectionlist",
+          label: "Programs List",
+          onClick: () => navigate("/admin/programsectionlist"),
+        },
+        {
+          key: "/admin/projectsectionlist",
+          label: "Project & Impact List",
+          onClick: () => navigate("/admin/projectsectionlist"),
+        },
+      ],
+    }
+
   ];
 
   const handleLogout = () => {
     localStorage.removeItem("adminToken");
     localStorage.removeItem("username");
-    navigate("/login", { replace: true });
+    navigate("/admin", { replace: true });
   };
 
   const MenuContent = (
     <Menu
       mode="inline"
-      defaultSelectedKeys={["1"]}
+      theme="dark"
       items={menuItems}
+      selectedKeys={[location.pathname]}
+      defaultOpenKeys={["content"]}
       style={{
         backgroundColor: "transparent",
         border: "none",
-        color: "white",
         flex: 1,
       }}
-      theme="dark"
     />
   );
 
   const LogoutButton = (
-    <div style={{ padding: "16px", textAlign: "center", marginTop: "440px" }}>
+    <div style={{ padding: 16 }}>
       <Button
         type="primary"
         icon={<LogoutOutlined />}
         onClick={handleLogout}
-        style={{ width: "100%", background: "#2E7D6F", borderColor: "#2E7D6F" }}
+        style={{
+          width: "100%",
+          background: "#2E7D6F",
+          borderColor: "#2E7D6F",
+        }}
       >
         Logout
       </Button>
@@ -99,7 +134,7 @@ export default function AdminLayout({ children }) {
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      {/* Desktop Sidebar */}
+      {/* ===================== SIDEBAR (DESKTOP) ===================== */}
       {!screens.xs && (
         <Sider
           width={220}
@@ -107,59 +142,47 @@ export default function AdminLayout({ children }) {
             backgroundColor: "#001f3f",
             display: "flex",
             flexDirection: "column",
-            minHeight: "100vh",
           }}
         >
           <h2
             style={{
-              color: "white",
+              color: "#fff",
+              textAlign: "center",
               padding: "16px",
               margin: 0,
-              textAlign: "center",
             }}
           >
             Admin Panel
           </h2>
-          <div
-            style={{
-              flex: 1,
-              marginTop: "24px",
-              width: "190px",
-              marginLeft: "auto",
-              marginRight: "auto",
-            }}
-          >
-            {MenuContent}
-          </div>
-          {/* Logout at bottom */}
+
+          <div style={{ flex: 1, padding: "0 12px" }}>{MenuContent}</div>
+
           {LogoutButton}
         </Sider>
       )}
 
-      {/* Drawer for Mobile */}
+      {/* ===================== SIDEBAR (MOBILE) ===================== */}
       {screens.xs && (
         <Drawer
           title="Admin Panel"
           placement="left"
-          closable
-          onClose={() => setDrawerVisible(false)}
           open={drawerVisible}
+          onClose={() => setDrawerVisible(false)}
           bodyStyle={{
             padding: 0,
             backgroundColor: "#001f3f",
             display: "flex",
             flexDirection: "column",
             height: "100%",
-            justifyContent: "space-between",
           }}
-          headerStyle={{ backgroundColor: "#001f3f", color: "white" }}
-          closeIcon={<span style={{ color: "white", fontSize: 20 }}>×</span>}
+          headerStyle={{ backgroundColor: "#b4dbc9ff", color: "#fff" }}
         >
-          <div>{MenuContent}</div>
+          <div style={{ flex: 1 }}>{MenuContent}</div>
           {LogoutButton}
         </Drawer>
       )}
 
+      {/* ===================== MAIN LAYOUT ===================== */}
       <Layout>
         <Header
           style={{
@@ -171,42 +194,30 @@ export default function AdminLayout({ children }) {
             boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <Breadcrumb
-              separator="/"
-              items={breadcrumbItems}
-              style={{ margin: 0, fontSize: 18, fontWeight: 500 }}
-            />
-          </div>
+          <Breadcrumb items={breadcrumbItems} />
 
-          {/* Profile Avatar + Username */}
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <Text strong>{username}</Text>
-            <Avatar
-              size="large"
-              icon={<UserOutlined />}
-              style={{ cursor: "pointer" }}
-            />
+            <Avatar icon={<UserOutlined />} />
+            {screens.xs && (
+              <Button
+                type="text"
+                icon={<MenuOutlined />}
+                onClick={() => setDrawerVisible(true)}
+              />
+            )}
           </div>
-          {/* Mobile Menu Button */}
-          {screens.xs && (
-            <Button
-              type="text"
-              icon={<MenuOutlined />}
-              onClick={() => setDrawerVisible(true)}
-            />
-          )}
         </Header>
 
         <Content
           style={{
-            margin: "16px",
-            padding: "16px",
+            margin: 16,
+            padding: 16,
             background: "#f0f2f5",
             minHeight: "calc(100vh - 64px)",
           }}
         >
-          {children}
+          <Outlet />
         </Content>
       </Layout>
     </Layout>
