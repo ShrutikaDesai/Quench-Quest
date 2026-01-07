@@ -355,7 +355,7 @@ useEffect(() => {
                                     lineHeight: 1.7,
                                 }}
                             >
-                                {who?.description ?? "Quench Quest Social Foundation is dedicated to empowering marginalized communities through education, health awareness, and grassroots-driven action"}
+                                {who?.description }
                             </Paragraph>
                         </motion.div>
 

@@ -19,6 +19,7 @@ import contactHeaderReducer from "./slices/contactHeaderSlice";
 import contactCardReducer from "./slices/contactCardSlice";
 import contactDetailReducer from "./slices/contactDetailSlice";
 import contactFAQSlice from "./slices/contactFAQSlice"; 
+import projectReducer from "./slices/projectSlice";
 
 export const store = configureStore({
   reducer: {
@@ -42,6 +43,7 @@ export const store = configureStore({
     contactCards: contactCardReducer,
     contactDetail: contactDetailReducer,
     faq: contactFAQSlice,
+    projects: projectReducer,
     
 
   },

@@ -159,7 +159,7 @@ const GetInvolved = () => {
     <Layout>
       <Content style={{ padding: "0px 20px", backgroundColor: "#ffffff" }}>
         {/* ================= Donation Section ================= */}
-        <Row data-section="donation" justify="center" style={getSectionStyle("donation", { marginBottom: 30, marginLeft: -20, marginRight: -20 })}>
+        {/* <Row data-section="donation" justify="center" style={getSectionStyle("donation", { marginBottom: 30, marginLeft: -20, marginRight: -20 })}>
           <Col xs={24} md={24}>
             <Card
               style={{
@@ -203,7 +203,7 @@ const GetInvolved = () => {
                   marginBottom: 30,
                 }} >
                 Your generous contributions enable us to continue our vital work, transforming lives and building stronger communities. <br></br>Every amount makes a significant impact.
-              </Paragraph> {/* Donation Amount */}
+              </Paragraph>
               <Space size="middle"
                 style={{
                   marginBottom: 10
@@ -216,14 +216,14 @@ const GetInvolved = () => {
                   <Input placeholder="Other amount" style={{ width: isMobile ? "100%" : 140 , padding: "8px"}}
                    type="number" onChange={(e) => setAmount(Number(e.target.value))} /> 
                    </Space> <br /> <br /> 
-                   {/* Frequency */}
+      
                     <Space size="middle" style={{ marginBottom: 20 }} direction={isMobile ? "vertical" : "horizontal"}>
                        <Button type={frequency === "One-time" ? "primary" : "default"} 
                        onClick={() => setFrequency("One-time")} block={isMobile} > One-time </Button> 
                        <Button type={frequency === "Monthly" ? "primary" : "default"} 
                        onClick={() => setFrequency("Monthly")} block={isMobile} > Monthly </Button>
                         </Space> <Divider /> 
-                        {/* Payment Method Dropdown */}
+                   
                          <Title level={5}>Select Payment Method</Title> 
                          <Select value={paymentMode} 
                          onChange={(value) => setPaymentMode(value)}
@@ -232,8 +232,15 @@ const GetInvolved = () => {
                           <Option value="Card"> 
                             <CreditCardOutlined /> 
                             Credit / Debit Card </Option>
-                             <Option value="UPI"> <GoogleOutlined /> UPI (Google Pay, PhonePe, Paytm) </Option> <Option value="NetBanking"> <BankOutlined /> Net Banking </Option> </Select> {/* Secure Payment Note */} <Paragraph style={{ marginTop: 20, color: colorTextSecondary, fontSize: 14, display: "flex", justifyContent: "center", alignItems: "center", gap: 6, }} > <LockOutlined style={{ color: colorPrimary }} /> Secure payment via trusted payment gateways </Paragraph> {/* Donate Button */} <Button type="primary" size="large" style={{ borderRadius: 8, marginTop: 10, width: isMobile ? "100%" : undefined }} block={isMobile} onClick={handleDonate} > Donate ₹{amount} </Button> </Card> </Col> </Row>
+                             <Option value="UPI"> <GoogleOutlined /> UPI (Google Pay, PhonePe, Paytm) </Option> <Option value="NetBanking"> <BankOutlined /> Net Banking </Option> </Select>
+                              <Paragraph style={{ marginTop: 20, color: colorTextSecondary, fontSize: 14, display: "flex", justifyContent: "center", alignItems: "center", gap: 6, }} > <
+                                LockOutlined style={{ color: colorPrimary }} /> Secure payment via trusted payment gateways </Paragraph> 
+                                <Button type="primary" size="large" style={{ borderRadius: 8, marginTop: 10, width: isMobile ? "100%" : undefined }} 
+                                block={isMobile} onClick={handleDonate} > Donate ₹{amount} </Button> </Card> </Col>
+                                 </Row> */}
 
+
+<br></br>
         {/* ================= Volunteer Section ================= */}
         <Row data-section="volunteer" justify="center" gutter={[16, 16]} style={getSectionStyle("volunteer", { marginBottom: 60 })}>
           <Col xs={24} sm={22} md={20} lg={16}>

@@ -327,7 +327,7 @@ const handleUpdateMission = () => {
           </Paragraph>
           <div style={{ marginBottom: 20 }}>
             {(program.benefits ? program.benefits.split(",") : []).map((tag, idx) => (
-              <Tag key={idx} style={{ marginBottom: 6 }}>
+              <Tag key={idx} style={{ marginBottom: 6 , marginRight: 8,  padding: "4px 10px",}}>
                 {tag.trim()}
               </Tag>
             ))}
