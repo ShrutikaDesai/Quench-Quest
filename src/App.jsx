@@ -19,6 +19,7 @@ import AboutSectionList from "./components/pages/AdminDashboard/AboutSectionList
 import ProgramSectionList from "./components/pages/AdminDashboard/ProgramSectionList";
 import ProjectSectionList from "./components/pages/AdminDashboard/ProjectSectionList";
 
+
 function App() {
   return (
     <BrowserRouter>
@@ -33,6 +34,7 @@ function App() {
           <Route path="/projects" element={<Project />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/get-involved" element={<GetInvolved />} />
+        
         </Route>
 
         {/* ADMIN LOGIN */}

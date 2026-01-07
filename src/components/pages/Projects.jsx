@@ -13,6 +13,7 @@ import training1 from "../../assets/story9.jpg";
 import training2 from "../../assets/story8.jpg";
 import training3 from "../../assets/story11.jpg";
 
+
 const { Title, Paragraph } = Typography;
 
 /* ===================== PROJECT DATA (WITH STATS) ===================== */
@@ -272,6 +273,9 @@ const Projects = () => {
               </Col>
             ))}
           </Row>
+
+
+
         </div>
       )}
     </div>
