@@ -11,6 +11,14 @@ import newsReducer from "./slices/newsSlice";
 import impactReducer from "./slices/impactSlice";
 import awardsReducer from "./slices/awardsSlice";
 import partnersReducer from "./slices/partnersSlice";
+import programReducer from "./slices/programSlice";
+import programCardsReducer from "./slices/programCardsSlice";
+import programSliderReducer from "./slices/programSliderSlice";
+import programMissionReducer from "./slices/programMissionSlice";
+import contactHeaderReducer from "./slices/contactHeaderSlice";
+import contactCardReducer from "./slices/contactCardSlice";
+import contactDetailReducer from "./slices/contactDetailSlice";
+import contactFAQSlice from "./slices/contactFAQSlice"; 
 
 export const store = configureStore({
   reducer: {
@@ -26,6 +34,15 @@ export const store = configureStore({
     impact: impactReducer,
     awards: awardsReducer,
     partners: partnersReducer,
+    program: programReducer,
+    programCards: programCardsReducer,
+    programSlider: programSliderReducer,
+    programMission: programMissionReducer,
+    contactHeader: contactHeaderReducer,
+    contactCards: contactCardReducer,
+    contactDetail: contactDetailReducer,
+    faq: contactFAQSlice,
+    
 
   },
 });

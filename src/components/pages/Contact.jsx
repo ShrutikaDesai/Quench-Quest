@@ -25,6 +25,11 @@ import {
 import { motion } from "framer-motion";
 import antdTheme from "../../theme/antdTheme";
 import { sendContactMessage, resetContactState } from "../../slices/contactSlice";
+import { fetchContactHeader, updateContactHeaderData } from "../../slices/contactHeaderSlice";
+import {fetchContactCards,updateContactCardData} from "../../slices/contactCardSlice";
+import{fetchContactDetail, updateContactDetailData} from "../../slices/contactDetailSlice";
+import { fetchFAQs } from "../../slices/contactFAQSlice";
+
 
 
 
@@ -39,10 +44,52 @@ const Contact = () => {
   const dispatch = useDispatch();
   const { loading, success, error } = useSelector((state) => state.contact);
   const [form] = Form.useForm();
+  const contactHeader = useSelector((state) => state.contactHeader.header);
+  const contactHeaderStatus = useSelector((state) => state.contactHeader.status);
+  const contactCards = useSelector((state) => state.contactCards.cards);
+const contactCardsStatus = useSelector((state) => state.contactCards.status);
+const contactDetail = useSelector((state) => state.contactDetail.cards);
+const contactDetailStatus = useSelector((state) => state.contactDetail.status);
+const faqs = useSelector((state) => state.faq.faqs);
+const faqStatus = useSelector((state) => state.faq.status);
+
+
 
   const onFinish = (values) => {
     dispatch(sendContactMessage(values));
   };
+
+  React.useEffect(() => {
+  dispatch(fetchContactHeader());
+}, [dispatch]);
+
+React.useEffect(() => {
+  dispatch(fetchContactCards());
+}, [dispatch]);
+
+React.useEffect(() => {
+  dispatch(fetchContactDetail());
+}, [dispatch]);
+
+React.useEffect(() => {
+  dispatch(fetchFAQs());
+}, [dispatch]);
+
+const handleUpdateContactHeader = () => {
+  if (!contactHeader?.id) return;
+
+  const formData = new FormData();
+  formData.append("title", "Get In");
+  formData.append("description", "Updated contact hero description");
+
+  dispatch(
+    updateContactHeaderData({
+       index: cardIndex,
+      data: formData,
+    })
+  );
+};
+
 
   // React.useEffect(() => {
   //   if (success) {
@@ -67,28 +114,53 @@ const Contact = () => {
     visible: { transition: { staggerChildren: 0.2 } },
   };
   // FAQ data
-  const faqs = [
-    {
-      question: "How can I donate to Quench Quest Social Foundation?",
-      answer:
-        "You can donate via our website using the 'Donate' button or contact us directly for bank transfer options.",
-    },
-    {
-      question: "What programs does the foundation currently run?",
-      answer:
-        "We run programs focusing on Education & Child Welfare, Health Assistance & Awareness, Livelihood & Skill Training, and Anti-Child Labour & Advocacy.",
-    },
-    {
-      question: "How can I volunteer with Quench Quest?",
-      answer:
-        "You can volunteer by signing up on our website or contacting us directly to learn about upcoming events and opportunities.",
-    },
-    {
-      question: "Who are the beneficiaries of your programs?",
-      answer:
-        "Our programs benefit children, women, and marginalized communities in both rural and urban areas.",
-    },
-  ];
+  // const faqs = [
+  //   {
+  //     question: "How can I donate to Quench Quest Social Foundation?",
+  //     answer:
+  //       "You can donate via our website using the 'Donate' button or contact us directly for bank transfer options.",
+  //   },
+  //   {
+  //     question: "What programs does the foundation currently run?",
+  //     answer:
+  //       "We run programs focusing on Education & Child Welfare, Health Assistance & Awareness, Livelihood & Skill Training, and Anti-Child Labour & Advocacy.",
+  //   },
+  //   {
+  //     question: "How can I volunteer with Quench Quest?",
+  //     answer:
+  //       "You can volunteer by signing up on our website or contacting us directly to learn about upcoming events and opportunities.",
+  //   },
+  //   {
+  //     question: "Who are the beneficiaries of your programs?",
+  //     answer:
+  //       "Our programs benefit children, women, and marginalized communities in both rural and urban areas.",
+  //   },
+  // ];
+
+  const purposeIcons = [
+  <TeamOutlined style={{ fontSize: 36, color: colorPrimary }} />,
+  <HeartFilled style={{ fontSize: 36, color: colorPrimary }} />,
+  <SafetyOutlined style={{ fontSize: 36, color: colorPrimary }} />,
+];
+
+const contactIcons = [
+  <TeamOutlined style={{ fontSize: 36, color: colorPrimary }} />,
+  <HeartFilled style={{ fontSize: 36, color: colorPrimary }} />,
+  <SafetyOutlined style={{ fontSize: 36, color: colorPrimary }} />,
+];
+
+const formatAddress = (text, wordsPerLine =6) => {
+  if (!text) return ""; // return empty string if undefined or null
+  const words = text.split(" ");
+  let result = "";
+  for (let i = 0; i < words.length; i++) {
+    result += words[i] + " ";
+    if ((i + 1) % wordsPerLine === 0) result += "\n"; // line break after every 6 words
+  }
+  return result.trim();
+};
+
+
 
   return (
     <ConfigProvider theme={antdTheme}>
@@ -127,20 +199,19 @@ const Contact = () => {
               </span>
             </Divider>
 
-            <Paragraph
-              style={{
-                maxWidth: 720,
-                margin: "0 auto",
-                fontSize: 16,
-                color: colorTextSecondary,
-                lineHeight: 1.8,
-              }}
-            >
-              Every voice matters and every helping hand counts. Whether you wish to support
-              our mission, seek guidance, or stand with us in uplifting underprivileged
-              communities, we welcome you to connect and be a part of our journey toward a
-              more inclusive and compassionate society.
-            </Paragraph>
+          <Paragraph
+  style={{
+    maxWidth: 720,
+    margin: "0 auto",
+    fontSize: 16,
+    color: colorTextSecondary,
+    lineHeight: 1.8,
+  }}
+>
+  {contactHeaderStatus === "loading"
+    ? "Loading description..."
+    : contactHeader?.description}
+</Paragraph>
           </motion.div>
 
           {/* PURPOSE CARDS */}
@@ -152,39 +223,35 @@ const Contact = () => {
             style={{ padding: "60px 20px" }}
           >
             <Row gutter={[24, 24]} justify="center" style={{ maxWidth: 1100, margin: "0 auto" }}>
-              {[
-                {
-                  icon: <TeamOutlined style={{ fontSize: 36, color: colorPrimary }} />,
-                  title: "Volunteer With Us",
-                  description:
-                    "Become a part of our mission to uplift children, women, and marginalized communities.",
-                },
-                {
-                  icon: <HeartFilled style={{ fontSize: 36, color: colorPrimary }} />,
-                  title: "Support Our Work",
-                  description:
-                    "Your contribution helps us run education, health, and livelihood programs.",
-                },
-                {
-                  icon: <SafetyOutlined style={{ fontSize: 36, color: colorPrimary }} />,
-                  title: "Need Assistance",
-                  description:
-                    "Reach out if you or your community requires guidance or welfare support.",
-                },
-              ].map((card, index) => (
-                <Col xs={24} md={8} key={index}>
-                  <motion.div variants={fadeInUp}>
-                    <Card hoverable style={{ textAlign: "center", borderRadius: 16 }}>
-                      {card.icon}
-                      <Title level={5} style={{ marginTop: 16 }}>
-                        {card.title}
-                      </Title>
-                      <Paragraph>{card.description}</Paragraph>
-                    </Card>
-                  </motion.div>
-                </Col>
-              ))}
-            </Row>
+  {contactCardsStatus === "loading" ? (
+    <Col span={24} style={{ textAlign: "center" }}>
+      <Paragraph>Loading purpose cards...</Paragraph>
+    </Col>
+  ) : contactCards.length === 0 ? (
+    <Col span={24} style={{ textAlign: "center" }}>
+      <Paragraph>No purpose cards available.</Paragraph>
+    </Col>
+  ) : (
+    contactCards.map((card, index) => (
+      <Col xs={24} md={8} key={index}>
+        <motion.div variants={fadeInUp}>
+          <Card hoverable style={{ textAlign: "center", borderRadius: 16 }}>
+            
+            {/* FRONTEND ICON */}
+            {purposeIcons[index % purposeIcons.length]}
+
+            <Title level={5} style={{ marginTop: 16 }}>
+              {card.title}
+            </Title>
+
+            <Paragraph>{card.description}</Paragraph>
+          </Card>
+        </motion.div>
+      </Col>
+    ))
+  )}
+</Row>
+
           </motion.div>
 
           {/* CONTACT DETAILS + FORM */}
@@ -197,142 +264,141 @@ const Contact = () => {
           >
             <Row gutter={[40, 40]} justify="center" style={{ maxWidth: 1200, margin: "0 auto" }}>
               {/* Contact Info */}
-              <Col xs={24} md={10}>
-                <motion.div variants={fadeInUp}>
-                  <div
-                    style={{
-                      background: "#ffffff",
-                      padding: "50px 40px",
-                      borderRadius: antdTheme.token.borderRadius + 4,
-                      height: "100%",
-                      boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
-                    }}
-                  >
-                    <Title
-                      level={2}
-                      style={{
-                        fontWeight: 700,
-                        letterSpacing: 1,
-                        color: antdTheme.token.colorTextSecondary,
-                        marginBottom: 24,
-                      }}
-                    >
-                      CONTACT US
-                    </Title>
+            {/* Contact Info */}
+<Col xs={24} md={10}>
+  <motion.div variants={fadeInUp}>
+    {contactDetail && (
+      <div
+        style={{
+          background: "#ffffff",
+          padding: "50px 40px",
+          borderRadius: antdTheme.token.borderRadius + 4,
+          height: "100%",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
+        }}
+      >
+        <Title
+          level={2}
+          style={{
+            fontWeight: 700,
+            letterSpacing: 1,
+            color: antdTheme.token.colorTextSecondary,
+            marginBottom: 24,
+          }}
+        >
+          CONTACT US
+        </Title>
 
-                    <Divider
-                      style={{
-                        margin: "16px 0 36px",
-                        borderColor: antdTheme.token.colorPrimary,
-                        opacity: 0.3,
-                      }}
-                    />
+        <Divider
+          style={{
+            margin: "16px 0 36px",
+            borderColor: antdTheme.token.colorPrimary,
+            opacity: 0.3,
+          }}
+        />
 
-                    <Paragraph
-                      style={{
-                        fontSize: 17,
-                        lineHeight: 1.9,
-                        color: antdTheme.token.colorTextSecondary,
-                        marginBottom: 45,
-                      }}
-                    >
-                      Please write to us if you would like to get involved and become part of
-                      our journey in transforming children’s lives.
-                    </Paragraph>
+        <Paragraph
+          style={{
+            fontSize: 17,
+            lineHeight: 1.9,
+            color: antdTheme.token.colorTextSecondary,
+            marginBottom: 45,
+          }}
+        >
+          {contactDetail.description}
+        </Paragraph>
 
-                    {/* Address */}
-                    <div style={{ display: "flex", gap: 18, marginBottom: 28 }}>
-                      <div
-                        style={{
-                          width: 46,
-                          height: 46,
-                          borderRadius: "50%",
-                          background: `${antdTheme.token.colorPrimary}15`,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <EnvironmentOutlined
-                          style={{ fontSize: 22, color: antdTheme.token.colorPrimary }}
-                        />
-                      </div>
+        {/* Address */}
+        <div style={{ display: "flex", gap: 18, marginBottom: 28 }}>
+          <div
+            style={{
+              width: 46,
+              height: 46,
+              borderRadius: "50%",
+              background: `${antdTheme.token.colorPrimary}15`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <EnvironmentOutlined
+              style={{ fontSize: 22, color: antdTheme.token.colorPrimary }}
+            />
+          </div>
+        <Paragraph
+  style={{
+    fontSize: 16,
+    color: antdTheme.token.colorTextSecondary,
+    margin: 0,
+    whiteSpace: "pre-line", // important to respect line breaks
+  }}
+>
+  {formatAddress(contactDetail.address, 4)}
+</Paragraph>
 
-                      <Paragraph
-                        style={{
-                          fontSize: 16,
-                          color: antdTheme.token.colorTextSecondary,
-                          margin: 0,
-                        }}
-                      >
-                        Vrindavan Society, Baif Rd
-                        <br />
-                        near Samindra Devi Market, Wagholi
-                        <br />
-                        Pune, Maharashtra - 412207
-                      </Paragraph>
-                    </div>
+        </div>
 
-                    {/* Phone */}
-                    <div style={{ display: "flex", gap: 18, marginBottom: 28 }}>
-                      <div
-                        style={{
-                          width: 46,
-                          height: 46,
-                          borderRadius: "50%",
-                          background: `${antdTheme.token.colorPrimary}15`,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <PhoneOutlined
-                          style={{ fontSize: 22, color: antdTheme.token.colorPrimary }}
-                        />
-                      </div>
+        {/* Phone */}
+        <div style={{ display: "flex", gap: 18, marginBottom: 28 }}>
+          <div
+            style={{
+              width: 46,
+              height: 46,
+              borderRadius: "50%",
+              background: `${antdTheme.token.colorPrimary}15`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <PhoneOutlined
+              style={{ fontSize: 22, color: antdTheme.token.colorPrimary }}
+            />
+          </div>
+          <Paragraph
+            style={{
+              fontSize: 16,
+              color: antdTheme.token.colorTextSecondary,
+              margin: 0,
+            }}
+          >
+            {contactDetail.phone}
+          </Paragraph>
+        </div>
 
-                      <Paragraph
-                        style={{
-                          fontSize: 16,
-                          color: antdTheme.token.colorTextSecondary,
-                          margin: 0,
-                        }}
-                      >
-                        +91 9765083269
-                      </Paragraph>
-                    </div>
+        {/* Email */}
+        <div style={{ display: "flex", gap: 18 }}>
+          <div
+            style={{
+              width: 46,
+              height: 46,
+              borderRadius: "50%",
+              background: `${antdTheme.token.colorPrimary}15`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <MailOutlined
+              style={{ fontSize: 22, color: antdTheme.token.colorPrimary }}
+            />
+          </div>
+          <Paragraph
+            style={{
+              fontSize: 16,
+              color: antdTheme.token.colorTextSecondary,
+              margin: 0,
+            }}
+          >
+            {contactDetail.email}
+          </Paragraph>
+        </div>
+      </div>
+    )}
+  </motion.div>
+</Col>
 
-                    {/* Email */}
-                    <div style={{ display: "flex", gap: 18 }}>
-                      <div
-                        style={{
-                          width: 46,
-                          height: 46,
-                          borderRadius: "50%",
-                          background: `${antdTheme.token.colorPrimary}15`,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <MailOutlined
-                          style={{ fontSize: 22, color: antdTheme.token.colorPrimary }}
-                        />
-                      </div>
 
-                      <Paragraph
-                        style={{
-                          fontSize: 16,
-                          color: antdTheme.token.colorTextSecondary,
-                          margin: 0,
-                        }}
-                      >
-                        thequenchquestteam@gmail.com
-                      </Paragraph>
-                    </div>
-                  </div>
-                </motion.div>
-              </Col>
 
               {/* Contact Form */}
               <Col xs={24} md={10}>
@@ -440,30 +506,37 @@ const Contact = () => {
                   Find quick answers to common questions about our foundation, programs, and how you can contribute.
                 </Paragraph>
 
-                <Collapse
-                  bordered={false}
-                  defaultActiveKey={[]}
-                  expandIconPosition="right"
-                  style={{ background: "transparent" }}
-                >
-                  {faqs.map((faq, idx) => (
-                    <Panel
-                      header={faq.question}
-                      key={idx}
-                      style={{
-                        borderRadius: 8,
-                        marginBottom: 16,
-                        background: "#ffffff",
-                        boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-                        fontWeight: 500,
-                      }}
-                    >
-                      <Paragraph style={{ margin: 0, color: colorTextSecondary }}>
-                        {faq.answer}
-                      </Paragraph>
-                    </Panel>
-                  ))}
-                </Collapse>
+               <Collapse
+  bordered={false}
+  defaultActiveKey={[]}
+  expandIconPosition="right"
+  style={{ background: "transparent" }}
+>
+  {faqStatus === "loading" ? (
+    <Paragraph>Loading FAQs...</Paragraph>
+  ) : faqs.length === 0 ? (
+    <Paragraph>No FAQs available.</Paragraph>
+  ) : (
+    faqs.map((faq) => (
+      <Panel
+        header={faq.question}
+        key={faq.id}
+        style={{
+          borderRadius: 8,
+          marginBottom: 16,
+          background: "#ffffff",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+          fontWeight: 500,
+        }}
+      >
+        <Paragraph style={{ margin: 0, color: colorTextSecondary }}>
+          {faq.answer}
+        </Paragraph>
+      </Panel>
+    ))
+  )}
+</Collapse>
+
               </Col>
             </Row>
           </motion.div>

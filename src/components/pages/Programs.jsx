@@ -15,89 +15,165 @@ import story2 from "../../assets/story2.png";
 import story3 from "../../assets/story3.png";
 
 import antdTheme from "../../theme/antdTheme";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProgramIntro, updateProgramHeaderData } from "../../slices/programSlice";
+import { fetchProgramCards, updateProgramCardData } from "../../slices/programCardsSlice";
+import { fetchProgramSlider, updateProgramSliderData } from "../../slices/programSliderSlice";
+import {fetchProgramMission,updateProgramMissionData} from "../../slices/programMissionSlice";
+
+
+
 
 const { Content } = Layout;
 const { Title, Paragraph } = Typography;
 
-const programsData = [
-    {
-        title: "Education & Child Welfare",
-        icon: <BookOutlined />,
-        description:
-            "Providing access to quality education, ensuring child protection, and fostering holistic development for children from underprivileged backgrounds.",
-        activities: [
-            "Running informal education and learning support centers",
-            "Distribution of school supplies and uniforms",
-            "Child protection awareness workshops",
-            "Nutritional support programs",
-        ],
-        beneficiaries: ["Children", "SC", "ST", "Urban Slum Families"],
-    },
-    {
-        title: "Women & Maternal Health",
-        icon: <HeartOutlined />,
-        description:
-            "Improving health outcomes for women and mothers through awareness, healthcare access, and reproductive health support.",
-        activities: [
-            "Health camps and regular medical check-ups",
-            "Maternal care and nutrition counseling",
-            "Hygiene and sanitation awareness",
-            "Distribution of sanitary products",
-        ],
-        beneficiaries: ["Women", "Expectant Mothers", "Rural Communities"],
-    },
-    {
-        title: "Livelihood & Skill Training",
-        icon: <ToolOutlined />,
-        description:
-            "Empowering economically weaker sections with vocational skills and livelihood opportunities to achieve financial independence.",
-        activities: [
-            "Vocational and skill development training",
-            "Entrepreneurship guidance programs",
-            "Job placement assistance",
-            "Financial literacy workshops",
-        ],
-        beneficiaries: ["Adults", "Unemployed Youth", "EWS", "OBCs"],
-    },
-    {
-        title: "Anti-Child Labour & Awareness",
-        icon: <SafetyOutlined />,
-        description:
-            "Working towards eradicating child labour and promoting awareness about children’s rights and social justice.",
-        activities: [
-            "Rescue and rehabilitation of child laborers",
-            "Community awareness drives",
-            "Advocacy for child rights",
-            "Human rights education workshops",
-        ],
-        beneficiaries: ["Children", "Parents", "Community Leaders"],
-    },
-];
+// const programsData = [
+//     {
+//         title: "Education & Child Welfare",
+//         icon: <BookOutlined />,
+//         description:
+//             "Providing access to quality education, ensuring child protection, and fostering holistic development for children from underprivileged backgrounds.",
+//         activities: [
+//             "Running informal education and learning support centers",
+//             "Distribution of school supplies and uniforms",
+//             "Child protection awareness workshops",
+//             "Nutritional support programs",
+//         ],
+//         beneficiaries: ["Children", "SC", "ST", "Urban Slum Families"],
+//     },
+//     {
+//         title: "Women & Maternal Health",
+//         icon: <HeartOutlined />,
+//         description:
+//             "Improving health outcomes for women and mothers through awareness, healthcare access, and reproductive health support.",
+//         activities: [
+//             "Health camps and regular medical check-ups",
+//             "Maternal care and nutrition counseling",
+//             "Hygiene and sanitation awareness",
+//             "Distribution of sanitary products",
+//         ],
+//         beneficiaries: ["Women", "Expectant Mothers", "Rural Communities"],
+//     },
+//     {
+//         title: "Livelihood & Skill Training",
+//         icon: <ToolOutlined />,
+//         description:
+//             "Empowering economically weaker sections with vocational skills and livelihood opportunities to achieve financial independence.",
+//         activities: [
+//             "Vocational and skill development training",
+//             "Entrepreneurship guidance programs",
+//             "Job placement assistance",
+//             "Financial literacy workshops",
+//         ],
+//         beneficiaries: ["Adults", "Unemployed Youth", "EWS", "OBCs"],
+//     },
+//     {
+//         title: "Anti-Child Labour & Awareness",
+//         icon: <SafetyOutlined />,
+//         description:
+//             "Working towards eradicating child labour and promoting awareness about children’s rights and social justice.",
+//         activities: [
+//             "Rescue and rehabilitation of child laborers",
+//             "Community awareness drives",
+//             "Advocacy for child rights",
+//             "Human rights education workshops",
+//         ],
+//         beneficiaries: ["Children", "Parents", "Community Leaders"],
+//     },
+// ];
 
-const storiesData = [
-    {
-        title: "From Child Labour To Classroom Dreams",
-        description:
-            "Rescued from child labour, Raju was enrolled in our bridge education program. Today, he is back in school, dreaming of becoming a teacher and uplifting others like him.",
-        image: story2,
-    },
-    {
-        title: "Revathi’s Journey From A Small Village To Working For India’s Largest IT Company",
-        description:
-            "From a rural background, Revathi overcame challenges through our education and skill programs. Today, she works at a leading IT company, inspiring young girls to dream big.",
-        image: story1,
-    },
-    {
-        title: "Empowering Women Through Skills & Confidence",
-        description:
-            "Through our livelihood training programs, Meena gained vocational skills and financial independence, transforming her family’s future.",
-        image: story3,
-    },
-];
+// const storiesData = [
+//     {
+//         title: "From Child Labour To Classroom Dreams",
+//         description:
+//             "Rescued from child labour, Raju was enrolled in our bridge education program. Today, he is back in school, dreaming of becoming a teacher and uplifting others like him.",
+//         image: story2,
+//     },
+//     {
+//         title: "Revathi’s Journey From A Small Village To Working For India’s Largest IT Company",
+//         description:
+//             "From a rural background, Revathi overcame challenges through our education and skill programs. Today, she works at a leading IT company, inspiring young girls to dream big.",
+//         image: story1,
+//     },
+//     {
+//         title: "Empowering Women Through Skills & Confidence",
+//         description:
+//             "Through our livelihood training programs, Meena gained vocational skills and financial independence, transforming her family’s future.",
+//         image: story3,
+//     },
+// ];
 
 
 const Programs = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+const programHeader = useSelector((state) => state.program.header);
+const programCards = useSelector((state) => state.programCards.cards);
+const programCardsStatus = useSelector((state) => state.programCards.status);
+const sliders = useSelector((state) => state.programSlider.sliders);
+const sliderStatus = useSelector((state) => state.programSlider.status);
+const mission = useSelector((state) => state.programMission.mission);
+const missionStatus = useSelector((state) => state.programMission.status);
+
+
+
+ useEffect(() => {
+    dispatch(fetchProgramIntro());
+  }, [dispatch]);
+
+  useEffect(() => {
+  dispatch(fetchProgramCards());
+}, [dispatch]);
+
+useEffect(() => {
+  dispatch(fetchProgramSlider());
+}, [dispatch]);
+
+useEffect(() => {
+  dispatch(fetchProgramMission());
+}, [dispatch]);
+
+
+  const handleUpdate = () => {
+    if (!programHeader?.id) return;
+
+    const formData = new FormData();
+    formData.append("title", "Updated Title");
+    formData.append("description", "Updated description for the program header");
+
+    dispatch(updateProgramHeaderData({ id: programHeader.id, data: formData }));
+  };
+
+const handleUpdateCard = (card) => {
+  const formData = new FormData();
+  formData.append("title", card.title + " Updated");
+  formData.append("description", card.description + " Updated");
+  dispatch(updateProgramCardData({ id: card.id, data: formData }));
+};
+
+const handleUpdateSlider = () => {
+  if (!slider?.id) return;
+
+  const formData = new FormData();
+  formData.append("title", slider.title + " Updated");
+  formData.append("description", slider.description + " Updated");
+  // If image upload exists:
+  // formData.append("image", selectedFile);
+
+  dispatch(updateProgramSliderData({ id: slider.id, data: formData }));
+};
+
+const handleUpdateMission = () => {
+  if (!mission?.id) return;
+
+  const formData = new FormData();
+  formData.append("section", mission.section + " Updated");
+  formData.append("description", mission.description + " Updated");
+
+  dispatch(updateProgramMissionData({ id: mission.id, data: formData }));
+};
+
+
     const { colorPrimary, colorTextSecondary } = antdTheme.token;
     const isMobile = typeof window !== "undefined" && window.matchMedia("(max-width: 576px)").matches;
 
@@ -165,112 +241,107 @@ const Programs = () => {
                 <Content style={{ padding: "100px 20px", background: "#ffffff" }}>
 
                     {/* Header */}
-                    <Row data-section="programs-header" justify="center" style={getSectionStyle("programs-header", {})}>
-                        <Col xs={24} md={14} style={{ textAlign: "center" }}>
-                            <Title level={2}>
-                                Our <span style={{ color: colorPrimary }}>Programs</span>
-                            </Title>
+                   <Row
+  data-section="programs-header"
+  justify="center"
+  style={getSectionStyle("programs-header", {})}
+>
+  <Col xs={24} md={14} style={{ textAlign: "center" }}>
+    <Title level={2}>
+      {programHeader?.section} 
+    </Title>
 
-                            <Divider plain style={{ margin: '30px 0' }}>
-                                <span
-                                    style={{
-                                        display: 'inline-flex',
-                                        alignItems: 'center',
-                                        gap: 12,
-                                        color: colorPrimary,
-                                        fontSize: 22,
-                                    }}
-                                >
-                                    <span style={{ width: 40, height: 2, background: colorPrimary }} />
-                                    <HeartFilled />
-                                    <span style={{ width: 40, height: 2, background: colorPrimary }} />
-                                </span>
-                            </Divider>
-                            <Paragraph
-                                style={{
-                                    fontSize: 16,
-                                    color: colorTextSecondary,
-                                    maxWidth: 750,
-                                    margin: "0 auto 60px",
-                                    lineHeight: 1.7,
-                                }}
-                            >
-                                At Quench Quest Social Foundation, our programs are designed to
-                                create sustainable impact for children, women, and economically
-                                weaker communities through education, healthcare, skills, and
-                                advocacy.
-                            </Paragraph>
-                        </Col>
-                    </Row>
+    <Divider plain style={{ margin: "30px 0" }}>
+      <span
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 12,
+          color: colorPrimary,
+          fontSize: 22,
+        }}
+      >
+        <span style={{ width: 40, height: 2, background: colorPrimary }} />
+        <HeartFilled />
+        <span style={{ width: 40, height: 2, background: colorPrimary }} />
+      </span>
+    </Divider>
 
-                    {/* Cards Container */}
-                    <Row
-                        data-section="program-cards"
-                        gutter={[40, 40]}
-                        justify="center"
-                        style={getSectionStyle("program-cards", { maxWidth: 1600, margin: "0 auto" })}
-                    >
-                        {programsData.map((program, index) => (
-                            <Col xs={24} sm={24} md={12} lg={10} key={index}>
-                                <Card
-                                    hoverable
-                                    style={{
-                                        height: "100%",
-                                        borderRadius: antdTheme.token.borderRadius,
-                                        boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
-                                        maxWidth: 900,
-                                        margin: "0 auto",
-                                    }}
-                                >
-                                    {/* Icon */}
-                                    <div
-                                        style={{
-                                            fontSize: 32,
-                                            color: colorPrimary,
-                                            marginBottom: 16,
-                                        }}
-                                    >
-                                        {program.icon}
-                                    </div>
+    <Paragraph
+      style={{
+        fontSize: 16,
+        color: colorTextSecondary,
+        maxWidth: 750,
+        margin: "0 auto 60px",
+        lineHeight: 1.7,
+      }}
+    >
+      {programHeader?.description }  </Paragraph>
+  </Col>
+</Row>
 
-                                    {/* Title */}
-                                    <Title level={4}>{program.title}</Title>
 
-                                    {/* Description */}
-                                    <Paragraph style={{ color: colorTextSecondary }}>
-                                        {program.description}
-                                    </Paragraph>
+    <Row
+  data-section="program-cards"
+  gutter={[40, 40]}
+  justify="center"
+  style={getSectionStyle("program-cards", { maxWidth: 1600, margin: "0 auto" })}
+>
+  {programCards.length === 0 ? (
+    <Col span={24} style={{ textAlign: "center", marginTop: 50 }}>
+      <Paragraph style={{ color: colorTextSecondary, fontSize: 16 }}>
+        {programCardsStatus === "loading" ? "Loading program cards..." : "No program cards available."}
+      </Paragraph>
+    </Col>
+  ) : (
+    programCards.map((program, index) => (
+      <Col xs={24} sm={24} md={12} lg={10} key={program.id}>
+        <Card
+          hoverable
+          style={{
+            height: "100%",
+            borderRadius: antdTheme.token.borderRadius,
+            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
+            maxWidth: 900,
+            margin: "0 auto",
+          }}
+        >
+          <div style={{ fontSize: 32, color: colorPrimary, marginBottom: 16 }}>
+            {program.icon || <BookOutlined />}
+          </div>
 
-                                    {/* Activities */}
-                                    <Paragraph style={{ fontWeight: 600, marginBottom: 8 }}>
-                                        Key Activities:
-                                    </Paragraph>
-                                    <ul style={{ paddingLeft: 18, color: colorTextSecondary }}>
-                                        {program.activities.map((item, idx) => (
-                                            <li key={idx}>{item}</li>
-                                        ))}
-                                    </ul>
+          <Title level={4}>{program.title || "Untitled Program"}</Title>
+          <Paragraph style={{ color: colorTextSecondary }}>{program.description || "No description available."}</Paragraph>
 
-                                    {/* Beneficiaries */}
-                                    <Paragraph style={{ fontWeight: 600, marginTop: 12 }}>
-                                        Target Beneficiaries:
-                                    </Paragraph>
-                                    <div style={{ marginBottom: 20 }}>
-                                        {program.beneficiaries.map((tag, idx) => (
-                                            <Tag key={idx} style={{ marginBottom: 6 }}>
-                                                {tag}
-                                            </Tag>
-                                        ))}
-                                    </div>
+          <Paragraph style={{ fontWeight: 600, marginBottom: 8 }}>
+            {program.activities || "Key Activities:"}
+          </Paragraph>
+          <ul style={{ paddingLeft: 18, color: colorTextSecondary }}>
+            {(program.activity_points ? program.activity_points.split(",") : []).map((item, idx) => (
+              <li key={idx}>{item.trim()}</li>
+            ))}
+          </ul>
 
-                                    {/* CTA */}
-                                    <Button type="primary" onClick={() => navigate('/contact')} block>
-                                        Learn More / Support
-                                    </Button>
-                                </Card>
-                            </Col>
-                        ))}
-                    </Row>
+          <Paragraph style={{ fontWeight: 600, marginTop: 12 }}>
+            {program.target || "Target Beneficiaries:"}
+          </Paragraph>
+          <div style={{ marginBottom: 20 }}>
+            {(program.benefits ? program.benefits.split(",") : []).map((tag, idx) => (
+              <Tag key={idx} style={{ marginBottom: 6 }}>
+                {tag.trim()}
+              </Tag>
+            ))}
+          </div>
+
+          <Button type="primary" onClick={() => handleUpdateCard(program)} block>
+         Learn More / Support
+          </Button>
+        </Card>
+      </Col>
+    ))
+  )}
+</Row>
+
                 </Content>
 
 
@@ -303,81 +374,86 @@ const Programs = () => {
                             </div>
 
                             {/* Slider */}
-                            <Carousel autoplay dots style={{ padding: "20px" }}>
-                                {storiesData.map((story, index) => (
-                                    <div key={index}>
-                                        <Card
-                                            style={{
-                                                borderRadius: 16,
-                                                overflow: "hidden",
-                                                boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
+<Carousel autoplay dots style={{ padding: "20px" }}>
+  {sliderStatus === "loading" ? (
+    <div style={{ textAlign: "center" }}>Loading stories...</div>
+  ) : sliders.length === 0 ? (
+    <div style={{ textAlign: "center" }}>No stories available.</div>
+  ) : (
+    sliders.map((story) => (
+      <div key={story.id}>
+        <Card
+          style={{
+            borderRadius: 16,
+            overflow: "hidden",
+            boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
+          }}
+        >
+          <Row gutter={0} align="middle">
+            {/* TEXT */}
+            <Col
+              xs={24}
+              md={12}
+              style={{
+                padding: isMobile ? "24px" : "50px",
+                background: colorPrimary,
+                color: "#ffffff",
+                minHeight: isMobile ? 220 : 380,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
+              <Title level={4} style={{ color: "#ffffff" }}>
+                {story.title}
+              </Title>
 
-                                            }}
-                                        >
-                                            <Row gutter={0} align="middle">
+              <Paragraph
+                style={{
+                  color: "rgba(255,255,255,0.9)",
+                  fontSize: 16,
+                  lineHeight: 1.7,
+                }}
+              >
+                {story.description}
+              </Paragraph>
 
-                                                {/* Text Content */}
-                                                <Col
-                                                    xs={24}
-                                                    md={12}
-                                                    style={{
-                                                        padding: isMobile ? "24px" : "50px",
-                                                        background: colorPrimary,
-                                                        color: "#ffffff",
-                                                        minHeight: isMobile ? 220 : 380,
-                                                        display: "flex",
-                                                        flexDirection: "column",
-                                                        justifyContent: "center",
-                                                    }}
-                                                >
-                                                    <Title level={4} style={{ color: "#ffffff" }}>
-                                                        {story.title}
-                                                    </Title>
+              <Button
+                onClick={() => navigate("/contact")}
+                style={{
+                  marginTop: 20,
+                  background: "#ffffff",
+                  color: colorPrimary,
+                  borderRadius: 30,
+                  fontWeight: 600,
+                  width: "fit-content",
+                }}
+              >
+                Know More
+              </Button>
+            </Col>
 
-                                                    <Paragraph
-                                                        style={{
-                                                            color: "rgba(255,255,255,0.9)",
-                                                            fontSize: 16,
-                                                            lineHeight: 1.7,
-                                                        }}
-                                                    >
-                                                        {story.description}
-                                                    </Paragraph>
+            {/* IMAGE */}
+            <Col xs={24} md={12}>
+              <img
+                src={story.image_url || story.image}
+                alt={story.title}
+                style={{
+                  width: "100%",
+                  height: isMobile ? 220 : "100%",
+                  objectFit: "cover",
+                  minHeight: isMobile ? 220 : 380,
+                  display: "block",
+                }}
+              />
+            </Col>
+          </Row>
+        </Card>
+      </div>
+    ))
+  )}
+</Carousel>
 
-                                                    <Button
-                                                       onClick={() => navigate('/contact')}
-                                                        style={{
-                                                            marginTop: 20,
-                                                            background: "#ffffff",
-                                                            color: colorPrimary,
-                                                            borderRadius: 30,
-                                                            fontWeight: 600,
-                                                            width: "fit-content",
-                                                        }}
-                                                    >
-                                                        Know More
-                                                    </Button>
-                                                </Col>
-
-                                                {/* Image */}
-                                                <Col xs={24} md={12}>
-                                                    <img
-                                                        src={story.image}
-                                                        alt={story.title}
-                                                        style={{
-                                                            width: "100%",
-                                                            height: isMobile ? 220 : "100%",
-                                                            objectFit: "cover",
-                                                            minHeight: isMobile ? 220 : 380,
-                                                            display: "block",
-                                                        }}
-                                                    />
-                                                </Col>
-                                            </Row>
-                                        </Card>
-                                    </div>
-                                ))}
-                            </Carousel>
 
                         </Col>
                     </Row>
@@ -385,62 +461,70 @@ const Programs = () => {
 
 
                 {/* DONATE NOW SECTION */}
-                <Content data-section="donate" style={getSectionStyle("donate", { padding: "80px 20px", background: "#f5f5f5", marginTop: 80 })}>
-                    <Row justify="center">
-                        <Col xs={24} md={14} style={{ textAlign: "center" }}>
-                            <Title level={2}>
+               <Content
+  data-section="donate"
+  style={getSectionStyle("donate", {
+    padding: "80px 20px",
+    background: "#f5f5f5",
+    marginTop: 80,
+  })}
+>
+  <Row justify="center">
+    <Col xs={24} md={14} style={{ textAlign: "center" }}>
+      <Title level={2}>
                                 Support Our <span style={{ color: colorPrimary }}>Mission</span>
                             </Title>
 
-                            <Divider plain style={{ margin: '30px 0' }}>
-                                <span
-                                    style={{
-                                        display: 'inline-flex',
-                                        alignItems: 'center',
-                                        gap: 12,
-                                        color: colorPrimary,
-                                        fontSize: 22,
-                                    }}
-                                >
-                                    <span style={{ width: 40, height: 2, background: colorPrimary }} />
-                                    <HeartFilled />
-                                    <span style={{ width: 40, height: 2, background: colorPrimary }} />
-                                </span>
-                            </Divider>
+      <Divider plain style={{ margin: "30px 0" }}>
+        <span
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 12,
+            color: colorPrimary,
+            fontSize: 22,
+          }}
+        >
+          <span style={{ width: 40, height: 2, background: colorPrimary }} />
+          <HeartFilled />
+          <span style={{ width: 40, height: 2, background: colorPrimary }} />
+        </span>
+      </Divider>
 
-                            <Paragraph
-                                style={{
-                                    fontSize: 16,
-                                    color: colorTextSecondary,
-                                    maxWidth: 750,
-                                    margin: "0 auto 40px",
-                                    lineHeight: 1.7,
-                                }}
-                            >
-                                Your donation helps us provide education, healthcare, livelihood opportunities,
-                                and support to underprivileged children, women, and families. Join us in making a lasting impact.
-                            </Paragraph>
+      <Paragraph
+        style={{
+          fontSize: 16,
+          color: colorTextSecondary,
+          maxWidth: 750,
+          margin: "0 auto 40px",
+          lineHeight: 1.7,
+        }}
+      >
+       {missionStatus === "loading"
+          ? "Loading mission..."
+          : mission?.description || "No description available."}
+      </Paragraph>
 
-                            <Button
-                                type="primary"
-                                size="large"
-                                style={{
-                                    borderRadius: 30,
-                                    padding: "10px 40px",
-                                    fontWeight: 600,
-                                    background: colorPrimary,
-                                    color: "#ffffff",
-                                }}
-                                onClick={() => {
-                                    // You can replace this with your actual donation link
-                                    window.open("https://www.yourdonationlink.com", "_blank");
-                                }}
-                            >
-                                Donate Now
-                            </Button>
-                        </Col>
-                    </Row>
-                </Content>
+      <Button
+        type="primary"
+        size="large"
+        style={{
+          borderRadius: 30,
+          padding: "10px 40px",
+          fontWeight: 600,
+        }}
+        onClick={() => window.open(mission?.donation_link || "#", "_blank")}
+      >
+        {mission?.button_text || "Donate Now"}
+      </Button>
+
+      {/* Admin update (optional) */}
+      {/* <Button onClick={handleUpdateMission} style={{ marginTop: 20 }}>
+        Update Mission
+      </Button> */}
+    </Col>
+  </Row>
+</Content>
 
 
             </Layout>
