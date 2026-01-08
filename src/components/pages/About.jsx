@@ -114,7 +114,7 @@ const About = () => {
       setLoadingLocal(true);
       console.log("Fetching leadership directly from API...");
       
-      const response = await fetch('http://192.168.145.38:8000/api/content/leadership/');
+      const response = await fetch('http://192.168.0.100:8000/api/content/leadership/');
       const data = await response.json();
       
       console.log("Leadership API response:", data);
@@ -138,9 +138,9 @@ const About = () => {
       
       // Try different possible endpoints
       const endpoints = [
-        'http://192.168.145.38:8000/api/content/coreobjectives/',
-        'http://192.168.145.38:8000/api/coreobjectives/',
-        'http://192.168.145.38:8000/coreobjectives/'
+        'http://192.168.0.100:8000/api/content/coreobjectives/',
+        'http://192.168.0.100:8000/api/coreobjectives/',
+        'http://192.168.0.100:8000/coreobjectives/'
       ];
       
       let data = null;
@@ -272,6 +272,39 @@ const About = () => {
     console.log("=== END STATE ===");
   }, [localCoreObjectives, coreItemsFromRedux, displayCoreObjectives, displayLoadingCore]);
 
+
+const renderFirstWordColoredText = (
+  text,
+  firstColor = "#000",
+  restColor = "#1890ff"
+) => {
+  if (!text) return null;
+
+  const words = text.trim().split(" ");
+  const firstWord = words[0];
+  const remainingText = words.slice(1).join(" ");
+
+  return (
+    <>
+      <span style={{ color: firstColor }}>{firstWord}</span>
+      {remainingText && (
+        <>
+          {" "}
+          <span style={{ color: restColor }}>{remainingText}</span>
+        </>
+      )}
+    </>
+  );
+};
+
+// Derive Impact section title from API data
+const impactSectionTitle =
+  Array.isArray(impactList) && impactList.length > 0
+    ? impactList[0].section
+    : "";
+
+
+
   return (
     <Layout>
     
@@ -306,9 +339,14 @@ const About = () => {
                 viewport={{ once: true, amount: 0.5 }}
               >
                 <motion.div variants={titleVariant}>
-                  <Title level={1}>
-                    <span style={{ color: antdTheme.token.colorBgHeader }}>{mainTitle}</span> <span style={{ color: colorPrimary }}>{subTitle}</span>
-                  </Title>
+                 <Title level={1}>
+  {renderFirstWordColoredText(
+    `${mainTitle} ${subTitle}`,
+    antdTheme.token.colorBgHeader,
+    colorPrimary
+  )}
+</Title>
+
                 </motion.div>
 
                 <motion.div variants={paraVariant}>
@@ -341,9 +379,14 @@ const About = () => {
                 transition={{ duration: 0.7, ease: 'easeOut' }}
                 viewport={{ once: true }}
               >
-                <Title level={2} style={{ marginBottom: 20 }}>
-                  {aboutWho.section}
-                </Title>
+     <Title level={2} style={{ marginBottom: 20 }}>
+  {renderFirstWordColoredText(
+    aboutWho.section,
+    "#000",
+    colorPrimary
+  )}
+</Title>
+
 
                 <Divider plain style={{ margin: '30px 0' }}>
                   <span
@@ -411,7 +454,10 @@ const About = () => {
                       {/* left-align icon/title/paragraph */}
                       <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 8, marginBottom: 10 }}>
                         {Icon}
-                        <Title level={3} style={{ margin: 0, textAlign: 'left' }}>{title}</Title>
+                       <Title level={3} style={{ margin: 0, textAlign: 'left' }}>
+  {renderFirstWordColoredText(title, "#000", colorPrimary)}
+</Title>
+
                       </div>
                       <Paragraph style={{ fontSize: 16, color: colorTextSecondary }}>{desc}</Paragraph>
                     </motion.div>
@@ -516,9 +562,14 @@ const About = () => {
               transition={{ duration: 0.7, ease: 'easeOut' }}
               viewport={{ once: true }}
             >
-              <Title level={2} style={{ marginBottom: 20 }}>
-                <span style={{ color: colorPrimary }}>{coreObjectivesTitle}</span>
-              </Title>
+          <Title level={2} style={{ marginBottom: 20 }}>
+  {renderFirstWordColoredText(
+    coreObjectivesTitle,
+    "#000",          
+    colorPrimary     
+  )}
+</Title>
+
 
               <Divider plain style={{ margin: '30px 0' }}>
                 <span
@@ -611,7 +662,14 @@ const About = () => {
               transition={{ duration: 0.7 }}
               viewport={{ once: true }}
             >
-              <Title level={2}>{leadershipSectionTitle}</Title>
+             <Title level={2}>
+  {renderFirstWordColoredText(
+    leadershipSectionTitle,
+    "#000",                             // first word → black
+    antdTheme.token.colorPrimary        // remaining → primary
+  )}
+</Title>
+
 
               <Divider plain style={{ margin: "30px 0" }}>
                 <span
@@ -719,7 +777,6 @@ const About = () => {
         </Row>
       </Content>
 
-      {/* Rest of your sections... */}
       {/* OUR IMPACT IN NUMBERS SECTION */}
       <Content id="projects" style={{ padding: '100px 20px', backgroundColor: '#ffffff' }}>
         <Row justify="center">
@@ -730,9 +787,14 @@ const About = () => {
               transition={{ duration: 0.8, ease: 'easeOut' }}
               viewport={{ once: true }}
             >
-              <Title level={2} style={{ marginBottom: 20 }}>
-                OUR <span style={{ color: colorPrimary }}>IMPACT IN NUMBERS</span>
-              </Title>
+             <Title level={2} style={{ marginBottom: 20 }}>
+  {renderFirstWordColoredText(
+    impactSectionTitle,
+    "#000",                     // first word
+    colorPrimary                // remaining words
+  )}
+</Title>
+
 
               <Divider plain style={{ margin: '30px 0' }}>
                 <span
@@ -881,9 +943,14 @@ const About = () => {
               transition={{ duration: 0.7 }}
               viewport={{ once: true }}
             >
-              <Title level={2}>
-                {partnerData ? partnerData.section : "OUR PARTNERS"}
-              </Title>
+             <Title level={2}>
+  {renderFirstWordColoredText(
+    partnerData?.section || "OUR PARTNERS",
+    "#000",                 // first word → black
+    colorPrimary            // remaining words → primary
+  )}
+</Title>
+
 
               <Divider plain>
                 <HeartFilled style={{ color: colorPrimary, fontSize: 22 }} />

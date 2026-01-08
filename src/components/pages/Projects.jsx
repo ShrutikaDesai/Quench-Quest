@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Row, Col, Card, Button, Tag, Typography } from "antd";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProjects } from "../../slices/projectSlice";
+import antdTheme from "../../theme/antdTheme";
 
 const { Title, Paragraph } = Typography;
 
@@ -28,6 +30,8 @@ const CATEGORY_MAP = {
 const Projects = () => {
   const [filter, setFilter] = useState("All");
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
+    const { colorPrimary, colorTextSecondary } = antdTheme.token;
+const navigate = useNavigate();
 
   const dispatch = useDispatch();
   const { list: apiProjects, loading } = useSelector(
@@ -97,12 +101,15 @@ const Projects = () => {
           textAlign: "center",
         }}
       >
-        <Title level={2}>Our Projects & Impact</Title>
+        <Title level={2}>
+            Our <span style={{ color: colorPrimary }}>Projects & Impact</span>
+            </Title>
+
         <Paragraph style={{ maxWidth: 700, margin: "0 auto" }}>
           Explore the tangible outcomes of our dedication to social welfare,
           empowerment, and community development.
         </Paragraph>
-        <Button type="primary">Download Impact Report</Button>
+        <Button type="primary" onClick={()=>navigate("/contact")}>Download Impact Report</Button>
       </motion.div>
 
       {/* ================= FILTERS ================= */}
@@ -152,9 +159,9 @@ const Projects = () => {
                     </Paragraph>
                   ))}
 
-                  <Button style={{ marginTop: 10 }}>
+                  {/* <Button style={{ marginTop: 10 }}>
                     View Case Study
-                  </Button>
+                  </Button> */}
                 </Card>
               </Col>
             ))

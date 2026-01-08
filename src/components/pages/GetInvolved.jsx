@@ -13,6 +13,7 @@ import {
   Space,
   Divider,
   Select,
+  message ,
 } from "antd";
 import {
   LockOutlined,
@@ -34,6 +35,8 @@ const { Option } = Select;
 
 const GetInvolved = () => {
   const { colorPrimary, colorTextSecondary, borderRadius } = antdTheme.token;
+  const [form] = Form.useForm();
+
 
   // Donation state
   const [amount, setAmount] = useState(100);
@@ -153,6 +156,11 @@ const GetInvolved = () => {
 
   const handleVolunteerSubmit = (values) => {
     console.log("Volunteer Application:", values);
+    // Static success message
+  message.success("Thank you for volunteering! We will contact you soon.");
+
+  // Clear form fields
+  form.resetFields();
   };
 
   return (
@@ -258,7 +266,7 @@ const GetInvolved = () => {
                 Join our dedicated team of volunteers!
               </Paragraph>
 
-              <Form layout="vertical" onFinish={handleVolunteerSubmit}>
+              <Form  form={form} layout="vertical" onFinish={handleVolunteerSubmit}>
                 <Row gutter={[16, 16]}>
                   <Col xs={24} md={12}>
                     <Form.Item
@@ -483,9 +491,9 @@ const GetInvolved = () => {
                           <Paragraph style={{ fontSize: 14, color: colorTextSecondary }}>{subtitles[idx]}</Paragraph>
                           <Paragraph style={{ fontSize: 15 }}>{descriptions[idx]}</Paragraph>
                         </div>
-                        <div style={{ textAlign: "right", marginTop: "auto" }}>
+                        {/* <div style={{ textAlign: "right", marginTop: "auto" }}>
                           <Button type="default">Details</Button>
-                        </div>
+                        </div> */}
                       </div>
                     </Card>
                   </Col>

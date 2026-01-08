@@ -281,10 +281,10 @@ useEffect(() => {
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.8, ease: "easeOut" }}
                         >
-                           <img
+                          <img
   src={
     hero?.image
-      ? `http://192.168.0.111:8000${hero.image}`
+      ? hero.image // Use the full URL directly from API
       : heroImage
   }
   alt="Empowering kids"

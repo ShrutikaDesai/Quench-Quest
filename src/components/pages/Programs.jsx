@@ -235,6 +235,34 @@ const handleUpdateMission = () => {
         return () => observer.disconnect();
     }, []);
 
+
+
+    
+const renderFirstWordColoredText = (
+  text,
+  firstColor = "#000",
+  restColor = "#1890ff"
+) => {
+  if (!text) return null;
+
+  const words = text.trim().split(" ");
+  const firstWord = words[0];
+  const remainingText = words.slice(1).join(" ");
+
+  return (
+    <>
+      <span style={{ color: firstColor }}>{firstWord}</span>
+      {remainingText && (
+        <>
+          {" "}
+          <span style={{ color: restColor }}>{remainingText}</span>
+        </>
+      )}
+    </>
+  );
+};
+
+
     return (
         <ConfigProvider theme={antdTheme}>
             <Layout>
@@ -247,9 +275,14 @@ const handleUpdateMission = () => {
   style={getSectionStyle("programs-header", {})}
 >
   <Col xs={24} md={14} style={{ textAlign: "center" }}>
-    <Title level={2}>
-      {programHeader?.section} 
-    </Title>
+  <Title level={2}>
+  {renderFirstWordColoredText(
+    programHeader?.section ,
+    "#000",          // first word → black
+    colorPrimary     // remaining → primary
+  )}
+</Title>
+
 
     <Divider plain style={{ margin: "30px 0" }}>
       <span
@@ -352,9 +385,14 @@ const handleUpdateMission = () => {
 
                             {/* Section Header */}
                             <div style={{ textAlign: "center", marginBottom: 60 }}>
-                                <Title level={2}>
-                                    Stories Of <span style={{ color: colorPrimary }}>Change</span>
-                                </Title>
+                              <Title level={2}>
+  {renderFirstWordColoredText(
+    "Stories Of Change",
+    "#000",          // first word → black
+    colorPrimary     // remaining → primary
+  )}
+</Title>
+
 
                                 <Divider plain>
                                     <span
@@ -471,9 +509,14 @@ const handleUpdateMission = () => {
 >
   <Row justify="center">
     <Col xs={24} md={14} style={{ textAlign: "center" }}>
-      <Title level={2}>
-                                Support Our <span style={{ color: colorPrimary }}>Mission</span>
-                            </Title>
+     <Title level={2}>
+  {renderFirstWordColoredText(
+    mission?.section,
+    "#000",          // first word → black
+    colorPrimary     // remaining words → primary
+  )}
+</Title>
+
 
       <Divider plain style={{ margin: "30px 0" }}>
         <span
