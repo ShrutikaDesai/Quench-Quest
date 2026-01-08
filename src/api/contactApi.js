@@ -1,7 +1,7 @@
 import axiosInstance from "../axiosInstance";
 
 export const submitContactForm = async (data) => {
-    const response = await axiosInstance.post("/new/contact/", data);
+    const response = await axiosInstance.post("/user/contact/", data);
     return response.data;
 };
 

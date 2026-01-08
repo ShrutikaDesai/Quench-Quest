@@ -22,6 +22,7 @@ import contactFAQSlice from "./slices/contactFAQSlice";
 import projectReducer from "./slices/projectSlice";
 import corporatePartnershipReducer from "./slices/corporatePartnershipSlice";
 import upcomingEventsReducer from "./slices/upcomingEventsSlice";
+import authReducer from "./slices/authSlice";
 
 export const store = configureStore({
   reducer: {
@@ -48,6 +49,7 @@ export const store = configureStore({
     projects: projectReducer,
     corporatePartnership: corporatePartnershipReducer,
     upcomingEvents: upcomingEventsReducer,
+    auth: authReducer,
     
 
   },

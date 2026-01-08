@@ -20,8 +20,6 @@ import { fetchImpact, updateImpactData } from "../../slices/impactSlice";
 
 
 
-
-
 const { Content } = Layout;
 const { Title, Paragraph } = Typography;
 
