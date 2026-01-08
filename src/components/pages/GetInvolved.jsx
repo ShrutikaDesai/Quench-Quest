@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import {useNavigate } from "react-router-dom";
 import {
   Layout,
   Typography,
@@ -27,6 +28,10 @@ import antdTheme from "../../theme/antdTheme";
 import eduImg from "../../assets/story6.png";
 import skillImg from "../../assets/story5.png";
 import childImg from "../../assets/story7.png";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCorporatePartnership } from "../../slices/corporatePartnershipSlice";
+import { fetchUpcomingEvents } from "../../slices/upcomingEventsSlice";
+
 
 const { Content } = Layout;
 const { Title, Paragraph } = Typography;
@@ -36,6 +41,10 @@ const { Option } = Select;
 const GetInvolved = () => {
   const { colorPrimary, colorTextSecondary, borderRadius } = antdTheme.token;
   const [form] = Form.useForm();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { data, status } = useSelector((state) => state.corporatePartnership);
+  const { events, status: eventsStatus } = useSelector((state) => state.upcomingEvents);
 
 
   // Donation state
@@ -161,6 +170,39 @@ const GetInvolved = () => {
 
   // Clear form fields
   form.resetFields();
+  };
+
+useEffect(() => {
+  dispatch(fetchCorporatePartnership());
+}, [dispatch]);
+
+useEffect(() => {
+  dispatch(fetchUpcomingEvents());
+}, [dispatch]);
+
+ // Render text with first word in different color
+  const renderFirstWordColoredText = (
+    text,
+    firstColor = "#000",
+    restColor = "#1890ff"
+  ) => {
+    if (!text) return null;
+
+    const words = text.trim().split(" ");
+    const firstWord = words[0];
+    const remainingText = words.slice(1).join(" ");
+
+    return (
+      <>
+        <span style={{ color: firstColor }}>{firstWord}</span>
+        {remainingText && (
+          <>
+            {" "}
+            <span style={{ color: restColor }}>{remainingText}</span>
+          </>
+        )}
+      </>
+    );
   };
 
   return (
@@ -352,7 +394,15 @@ const GetInvolved = () => {
               }}
             >
               <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 20px" }}>
-                <Title level={2}>Corporate Partnerships</Title>
+          <Title level={2} style={{ textAlign: "center" }}>
+  {data && data[0]?.section
+    ? renderFirstWordColoredText(
+        data[0].section,
+        "#000",
+        antdTheme.token.colorPrimary
+      )
+    : ""}
+</Title>
 
                 <Divider plain>
                   <span
@@ -370,37 +420,66 @@ const GetInvolved = () => {
                   </span>
                 </Divider>
 
+<Paragraph
+  style={{
+    maxWidth: 800,
+    margin: "0 auto 40px",
+    color: colorTextSecondary,
+    fontSize: 16,
+    textAlign: "center",
+  }}
+>
+  {data && data[0]?.phara }
+</Paragraph>
 
-                <Paragraph style={{ maxWidth: 800, margin: "0 auto 40px", color: colorTextSecondary, fontSize: 16 }}>
-                  Collaborate with us to drive meaningful change across education, health,
-                  livelihood development, and child welfare initiatives. Together, we can
-                  build sustainable and measurable social impact.
-                </Paragraph>
+               <Row gutter={[24, 24]} style={{ textAlign: "left" }}>
+  {/* ================= Why Partner With Us ================= */}
+  <Col xs={24} md={12}>
+    <Title level={4}>
+      {data && data[0]?.title ? renderFirstWordColoredText(
+        data[0].title,
+        "#000",
+        antdTheme.token.colorPrimary
+      ) : "Why Partner With Us?"}
+    </Title>
+    <ul style={{ color: colorTextSecondary, lineHeight: 2 }}>
+      {data && data[0]?.description
+        ? data[0].description.split(",").map((item, idx) => (
+            <li key={idx}>{item.trim()}</li>
+          ))
+        : (
+            <>
+              
+            </>
+          )}
+    </ul>
+  </Col>
 
-                <Row gutter={[24, 24]} style={{ textAlign: "left" }}>
-                  <Col xs={24} md={12}>
-                    <Title level={4}>Why Partner With Us?</Title>
-                    <ul style={{ color: colorTextSecondary, lineHeight: 2 }}>
-                      <li><strong>Transparent & Accountable:</strong> Clear reporting.</li>
-                      <li><strong>Impact-Driven Programs:</strong> Well-structured projects.</li>
-                      <li><strong>Inclusive Empowerment:</strong> Uplifting women, youth, children.</li>
-                      <li><strong>Grassroots Reach:</strong> Community-level initiatives.</li>
-                      <li><strong>Sustainable Impact:</strong> Long-term solutions.</li>
-                    </ul>
-                  </Col>
-                  <Col xs={24} md={12}>
-                    <Title level={4}>Partnership Opportunities</Title>
-                    <ul style={{ color: colorTextSecondary, lineHeight: 2 }}>
-                      <li><strong>Education & Child Welfare:</strong> Support child education & protection.</li>
-                      <li><strong>Health & Awareness Programs:</strong> Collaborate on health camps.</li>
-                      <li><strong>Livelihood & Skill Development:</strong> Enable vocational training.</li>
-                      <li><strong>Employee Engagement:</strong> Team volunteering.</li>
-                      <li><strong>In-kind & Strategic Support:</strong> Contribute resources/expertise.</li>
-                    </ul>
-                  </Col>
-                </Row>
+  {/* ================= Partnership Opportunities ================= */}
+  <Col xs={24} md={12}>
+    <Title level={4}>
+      {data && data[1]?.title ? renderFirstWordColoredText(
+        data[1].title,
+        "#000",
+        antdTheme.token.colorPrimary
+      ) : "Partnership Opportunities"}
+    </Title>
+    <ul style={{ color: colorTextSecondary, lineHeight: 2 }}>
+      {data && data[1]?.description
+        ? data[1].description.split(",").map((item, idx) => (
+            <li key={idx}>{item.trim()}</li>
+          ))
+        : (
+            <>
+             
+            </>
+          )}
+    </ul>
+  </Col>
+</Row>
 
-                <Button type="primary" size="large" onClick={() => navigate('/contact')} style={{ marginTop: 20 }}>Learn More & Connect</Button>
+
+                <Button type="primary" size="large" onClick={() => navigate('/contact')} style={{ marginTop: 20 }}>Know More</Button>
               </div>
             </Card>
           </Col>
@@ -409,7 +488,17 @@ const GetInvolved = () => {
         {/* ================= Upcoming Fundraising Events ================= */}
         <Row data-section="upcoming" justify="center" gutter={[32, 32]} style={getSectionStyle("upcoming", { marginBottom: 80 })}>
           <Col xs={24} sm={22} md={20}>
-            <Title level={2} style={{ textAlign: "center" }}>Upcoming Fundraising Events</Title>
+            <Title level={2} style={{ textAlign: "center" }}>
+  {eventsStatus === "loading"
+    ? "Loading section..."
+    : events.length > 0
+    ? renderFirstWordColoredText(
+        events[0].section,
+        "#000", // default color for the rest
+        antdTheme.token.colorPrimary // color for the first word
+      )
+    : "No section available."}
+</Title>
 
             <Divider plain>
               <span
@@ -427,78 +516,83 @@ const GetInvolved = () => {
               </span>
             </Divider>
 
-            <Paragraph style={{ maxWidth: 850, margin: "0 auto 40px", color: colorTextSecondary, fontSize: 16, textAlign: "center" }}>
-              Our fundraising events are thoughtfully designed around our core programs—education, health, livelihood, and child protection—to create meaningful and lasting impact.
-            </Paragraph>
+          <Paragraph
+  style={{
+    maxWidth: 850,
+    margin: "0 auto 40px",
+    color: colorTextSecondary,
+    fontSize: 16,
+    textAlign: "center",
+  }}
+>
+  {eventsStatus === "loading"
+    ? "Loading description..."
+    : events.length > 0
+    ? events[0].description
+    : "No description available."}
+</Paragraph>
+
 
             <Row gutter={[16, 24]}>
-              {[eduImg, skillImg, childImg].map((img, idx) => {
-                const titles = [
-                  "Run for Education",
-                  "Skill Development Fair",
-                  "Child Rights Awareness Drive",
-                ];
-                const subtitles = [
-                  "March 24, 2026 · Pune",
-                  "April 20, 2026 · Delhi",
-                  "May 02, 2026 · Mumbai",
-                ];
-                const descriptions = [
-                  "A community marathon supporting access to education, school kits, and safe learning environments for children.",
-                  "Supporting vocational training, entrepreneurship, and sustainable income opportunities for youth and women.",
-                  "A campaign to raise awareness against child labour and advocate for child safety, rights, and protection.",
-                ];
-                const categories = [
-                  "Education & Child Welfare",
-                  "Livelihood & Skills",
-                  "Child Protection",
-                ];
+             {eventsStatus === "loading" ? (
+  <p>Loading events...</p>
+) : events.length > 0 ? (
+  events.map((event) => (
+    <Col xs={24} sm={12} md={8} key={event.id}>
+      <Card
+        hoverable
+        style={{
+          borderRadius: 16,
+          height: "100%",
+          boxShadow: "0 12px 36px rgba(16,24,40,0.10)",
+          padding: 0,
+          overflow: "hidden",
+        }}
+        bodyStyle={{ padding: "18px" }}
+        cover={
+          <Image
+            src={event.image_url || event.image}
+            alt={event.title}
+            fallback={event.image_url || event.image}
+            preview={false}
+            style={{
+              width: "100%",
+              height: eventImgHeight,
+              objectFit: "cover",
+              borderTopLeftRadius: 16,
+              borderTopRightRadius: 16,
+            }}
+          />
+        }
+      >
+        <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+          <div>
+            <div
+              style={{
+                background: "#F2F4F7",
+                padding: "6px 16px",
+                borderRadius: 20,
+                fontSize: 13,
+                display: "inline-block",
+                marginBottom: 12,
+              }}
+            >
+              {event.tag}
+            </div>
+            <Title level={4}>{event.title}</Title>
+            <Paragraph style={{ fontSize: 14, color: colorTextSecondary }}>
+              {event.event_date} · {event.location}
+            </Paragraph>
+            <Paragraph style={{ fontSize: 15 }}>{event.sub_description}</Paragraph>
+          </div>
+        </div>
+      </Card>
+    </Col>
+  ))
+) : (
+  <p>No upcoming events found.</p>
+)}
 
-                return (
-                  <Col xs={24} sm={12} md={8} key={idx}>
-                    <Card
-                      hoverable
-                      style={{
-                        borderRadius: 16,
-                        height: "100%",
-                        boxShadow: "0 12px 36px rgba(16,24,40,0.10)",
-                        padding: 0,
-                        overflow: "hidden",
-                      }}
-                      bodyStyle={{ padding: "18px" }}
-                      cover={
-                        <Image
-                          src={img}
-                          alt={titles[idx]}
-                          fallback={img}
-                          preview={false}
-                          style={{
-                            width: "100%",
-                            height: eventImgHeight,
-                            objectFit: "cover",
-                            borderTopLeftRadius: 16,
-                            borderTopRightRadius: 16,
-                          }}
-                        />
-                      }
-                    >
-                      <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-                        <div>
-                          <div style={{ background: "#F2F4F7", padding: "6px 16px", borderRadius: 20, fontSize: 13, display: "inline-block", marginBottom: 12 }}>
-                            {categories[idx]}
-                          </div>
-                          <Title level={4}>{titles[idx]}</Title>
-                          <Paragraph style={{ fontSize: 14, color: colorTextSecondary }}>{subtitles[idx]}</Paragraph>
-                          <Paragraph style={{ fontSize: 15 }}>{descriptions[idx]}</Paragraph>
-                        </div>
-                        {/* <div style={{ textAlign: "right", marginTop: "auto" }}>
-                          <Button type="default">Details</Button>
-                        </div> */}
-                      </div>
-                    </Card>
-                  </Col>
-                );
-              })}
             </Row>
           </Col>
         </Row>

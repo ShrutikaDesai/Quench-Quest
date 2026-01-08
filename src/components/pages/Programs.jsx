@@ -7,6 +7,8 @@ import {
     ToolOutlined,
     SafetyOutlined,
     HeartFilled,
+    RightOutlined,
+    LeftOutlined,
 } from "@ant-design/icons";
 import { Carousel } from "antd";
 
@@ -261,6 +263,37 @@ const renderFirstWordColoredText = (
     </>
   );
 };
+const ArrowStyle = (colorPrimary) => ({
+  position: "absolute",
+  top: "50%",
+  transform: "translateY(-50%)",
+  zIndex: 5,
+  fontSize: 20,
+  background: "#ffffff",
+  color: colorPrimary,
+  padding: 12,
+  borderRadius: "50%",
+  boxShadow: "0 8px 20px rgba(0,0,0,0.2)",
+  cursor: "pointer",
+});
+
+const PrevArrow = ({ onClick, colorPrimary }) => (
+  <div
+    style={{ ...ArrowStyle(colorPrimary), left: 15 }}
+    onClick={onClick}
+  >
+    <LeftOutlined />
+  </div>
+);
+
+const NextArrow = ({ onClick, colorPrimary }) => (
+  <div
+    style={{ ...ArrowStyle(colorPrimary), right: 15 }}
+    onClick={onClick}
+  >
+    <RightOutlined />
+  </div>
+);
 
 
     return (
@@ -366,8 +399,8 @@ const renderFirstWordColoredText = (
             ))}
           </div>
 
-          <Button type="primary" onClick={() => handleUpdateCard(program)} block>
-         Learn More / Support
+          <Button type="primary"  onClick={() => navigate("/contact")} block>
+         Know More 
           </Button>
         </Card>
       </Col>
@@ -379,124 +412,132 @@ const renderFirstWordColoredText = (
 
 
                 {/* STORIES OF CHANGE SECTION */}
-                <Content >
-                    <Row data-section="stories" justify="center" style={getSectionStyle("stories", { marginTop: 120 })}>
-                        <Col xs={24} md={20}>
+             <Content>
+  <Row
+    data-section="stories"
+    justify="center"
+    style={getSectionStyle("stories", { marginTop: 120 })}
+  >
+    <Col xs={24} md={20}>
 
-                            {/* Section Header */}
-                            <div style={{ textAlign: "center", marginBottom: 60 }}>
-                              <Title level={2}>
-  {renderFirstWordColoredText(
-    "Stories Of Change",
-    "#000",          // first word → black
-    colorPrimary     // remaining → primary
-  )}
-</Title>
+      {/* ===== SECTION HEADER ===== */}
+      <div style={{ textAlign: "center", marginBottom: 60 }}>
+        <Title level={2}>
+          {renderFirstWordColoredText(
+            "Stories Of Change",
+            "#000",
+            colorPrimary
+          )}
+        </Title>
 
-
-                                <Divider plain>
-                                    <span
-                                        style={{
-                                            display: "inline-flex",
-                                            alignItems: "center",
-                                            gap: 12,
-                                            color: colorPrimary,
-                                            fontSize: 22,
-                                        }}
-                                    >
-                                        <span style={{ width: 40, height: 2, background: colorPrimary }} />
-                                        <HeartFilled />
-                                        <span style={{ width: 40, height: 2, background: colorPrimary }} />
-                                    </span>
-                                </Divider>
-                            </div>
-
-                            {/* Slider */}
-<Carousel autoplay dots style={{ padding: "20px" }}>
-  {sliderStatus === "loading" ? (
-    <div style={{ textAlign: "center" }}>Loading stories...</div>
-  ) : sliders.length === 0 ? (
-    <div style={{ textAlign: "center" }}>No stories available.</div>
-  ) : (
-    sliders.map((story) => (
-      <div key={story.id}>
-        <Card
-          style={{
-            borderRadius: 16,
-            overflow: "hidden",
-            boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
-          }}
-        >
-          <Row gutter={0} align="middle">
-            {/* TEXT */}
-            <Col
-              xs={24}
-              md={12}
-              style={{
-                padding: isMobile ? "24px" : "50px",
-                background: colorPrimary,
-                color: "#ffffff",
-                minHeight: isMobile ? 220 : 380,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-              }}
-            >
-              <Title level={4} style={{ color: "#ffffff" }}>
-                {story.title}
-              </Title>
-
-              <Paragraph
-                style={{
-                  color: "rgba(255,255,255,0.9)",
-                  fontSize: 16,
-                  lineHeight: 1.7,
-                }}
-              >
-                {story.description}
-              </Paragraph>
-
-              <Button
-                onClick={() => navigate("/contact")}
-                style={{
-                  marginTop: 20,
-                  background: "#ffffff",
-                  color: colorPrimary,
-                  borderRadius: 30,
-                  fontWeight: 600,
-                  width: "fit-content",
-                }}
-              >
-                Know More
-              </Button>
-            </Col>
-
-            {/* IMAGE */}
-            <Col xs={24} md={12}>
-              <img
-                src={story.image_url || story.image}
-                alt={story.title}
-                style={{
-                  width: "100%",
-                  height: isMobile ? 220 : "100%",
-                  objectFit: "cover",
-                  minHeight: isMobile ? 220 : 380,
-                  display: "block",
-                }}
-              />
-            </Col>
-          </Row>
-        </Card>
+        <Divider plain>
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 12,
+              color: colorPrimary,
+              fontSize: 22,
+            }}
+          >
+            <span style={{ width: 40, height: 2, background: colorPrimary }} />
+            <HeartFilled />
+            <span style={{ width: 40, height: 2, background: colorPrimary }} />
+          </span>
+        </Divider>
       </div>
-    ))
-  )}
-</Carousel>
 
+      {/* ===== SLIDER ===== */}
+      <Carousel
+        autoplay
+        dots
+        arrows
+        prevArrow={<PrevArrow colorPrimary={colorPrimary} />}
+        nextArrow={<NextArrow colorPrimary={colorPrimary} />}
+        style={{ padding: "20px", position: "relative" }}
+      >
+        {sliderStatus === "loading" ? (
+          <div style={{ textAlign: "center" }}>Loading stories...</div>
+        ) : sliders.length === 0 ? (
+          <div style={{ textAlign: "center" }}>No stories available.</div>
+        ) : (
+          sliders.map((story) => (
+            <div key={story.id}>
+              <Card
+                style={{
+                  borderRadius: 16,
+                  overflow: "hidden",
+                  boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
+                }}
+              >
+                <Row gutter={0} align="middle">
+                  {/* ===== TEXT ===== */}
+                  <Col
+                    xs={24}
+                    md={12}
+                    style={{
+                      padding: isMobile ? "24px" : "50px",
+                      background: colorPrimary,
+                      color: "#ffffff",
+                      minHeight: isMobile ? 220 : 380,
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Title level={4} style={{ color: "#ffffff" }}>
+                      {story.title}
+                    </Title>
 
-                        </Col>
-                    </Row>
-                </Content>
+                    <Paragraph
+                      style={{
+                        color: "rgba(255,255,255,0.9)",
+                        fontSize: 16,
+                        lineHeight: 1.7,
+                      }}
+                    >
+                      {story.description}
+                    </Paragraph>
 
+                    <Button
+                      onClick={() => navigate("/contact")}
+                      style={{
+                        marginTop: 20,
+                        background: "#ffffff",
+                        color: colorPrimary,
+                        borderRadius: 30,
+                        fontWeight: 600,
+                        width: "fit-content",
+                      }}
+                    >
+                      Know More
+                    </Button>
+                  </Col>
+
+                  {/* ===== IMAGE ===== */}
+                  <Col xs={24} md={12}>
+                    <img
+                      src={story.image_url || story.image}
+                      alt={story.title}
+                      style={{
+                        width: "100%",
+                        height: isMobile ? 220 : "100%",
+                        objectFit: "cover",
+                        minHeight: isMobile ? 220 : 380,
+                        display: "block",
+                      }}
+                    />
+                  </Col>
+                </Row>
+              </Card>
+            </div>
+          ))
+        )}
+      </Carousel>
+
+    </Col>
+  </Row>
+</Content>
 
                 {/* DONATE NOW SECTION */}
                <Content
@@ -556,9 +597,9 @@ const renderFirstWordColoredText = (
           padding: "10px 40px",
           fontWeight: 600,
         }}
-        onClick={() => window.open(mission?.donation_link || "#", "_blank")}
+         onClick={() => navigate('/get-involved')}
       >
-        {mission?.button_text || "Donate Now"}
+        {mission?.button_text || "Volunteer With Us"}
       </Button>
 
       {/* Admin update (optional) */}

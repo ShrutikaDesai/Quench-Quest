@@ -1,7 +1,7 @@
 import { Layout, Menu, Button, Drawer, Grid } from "antd";
 import { MenuOutlined, CloseOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import logo from "../../../assets/logo.jpg";
 
 const { Header } = Layout;
@@ -14,21 +14,31 @@ const menuItems = [
   { key: "projects", label: <Link to="/projects">Projects & Impact</Link> },
   { key: "involved", label: <Link to="/get-involved">Get Involved</Link> },
   { key: "contact", label: <Link to="/contact">Contact</Link> },
-  
-
 ];
+
+const routeToKeyMap = {
+  "/": "home",
+  "/about": "about",
+  "/programs": "programs",
+  "/projects": "projects",
+  "/get-involved": "involved",
+  "/contact": "contact",
+};
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const screens = useBreakpoint();
   const isMobile = !screens.md;
   const [open, setOpen] = useState(false);
+
+  const selectedKey = routeToKeyMap[location.pathname] || "home";
 
   return (
     <>
       <Header
         style={{
-          position: 'sticky',
+          position: "sticky",
           top: 0,
           zIndex: 1100,
           padding: 0,
@@ -48,19 +58,22 @@ const Navbar = () => {
           }}
         >
           {/* Logo */}
-          <Link to="/" onClick={(e) => { e.preventDefault(); navigate('/'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} aria-label="Go to homepage" style={{ display: 'inline-block' }}>
-            <img
-              src={logo}
-              alt="NGO Logo"
-              style={{ height: 42, cursor: 'pointer' }}
-            />
+          <Link
+            to="/"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          >
+            <img src={logo} alt="NGO Logo" style={{ height: 42 }} />
           </Link>
 
           {/* Desktop Menu */}
           {!isMobile && (
             <Menu
               mode="horizontal"
-              defaultSelectedKeys={["home"]}
+              selectedKeys={[selectedKey]}
               items={menuItems}
               style={{
                 flex: 1,
@@ -72,16 +85,25 @@ const Navbar = () => {
             />
           )}
 
-          {/* Desktop Donate */}
-          {!isMobile && <Button type="primary" onClick={() => navigate('/contact')}>Donate</Button>}
+          {/* Desktop CTA */}
+          {!isMobile && (
+            <Button type="primary" onClick={() => navigate("/get-involved")}>
+              Volunteer With Us
+            </Button>
+          )}
 
-          {/* Mobile Hamburger (toggles open/close) */}
+          {/* Mobile Hamburger */}
           {isMobile && (
             <Button
               type="text"
-              icon={open ? <CloseOutlined style={{ fontSize: 22 }} /> : <MenuOutlined style={{ fontSize: 22 }} />}
+              icon={
+                open ? (
+                  <CloseOutlined style={{ fontSize: 22 }} />
+                ) : (
+                  <MenuOutlined style={{ fontSize: 22 }} />
+                )
+              }
               onClick={() => setOpen(!open)}
-              aria-label={open ? "Close menu" : "Open menu"}
               style={{ marginLeft: "auto" }}
             />
           )}
@@ -98,11 +120,21 @@ const Navbar = () => {
         <Menu
           mode="vertical"
           items={menuItems}
+          selectedKeys={[selectedKey]}
           onClick={() => setOpen(false)}
         />
-        <Button type="primary" onClick={() => navigate('/contact')} block style={{ marginTop: 20 }}>
-          Donate
-        </Button>
+       <Button
+  type="primary"
+  block
+  style={{ marginTop: 20 }}
+  onClick={() => {
+    setOpen(false);              // close drawer
+    navigate("/get-involved");   // navigate
+  }}
+>
+  Volunteer With Us
+</Button>
+
       </Drawer>
     </>
   );

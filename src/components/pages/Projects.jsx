@@ -13,25 +13,16 @@ const programFilters = [
   "All",
   "Education & Child Welfare",
   "Health Assistance & Awareness",
-  "Livelihood & Skill Training",
+  // "Livelihood & Skill Training",
   "Anti-Child Labour & Advocacy",
   "Training & Development",
 ];
 
-/* ===================== CATEGORY MAP ===================== */
-const CATEGORY_MAP = {
-  6: "Education & Child Welfare",
-  7: "Health Assistance & Awareness",
-  8: "Livelihood & Skill Training",
-  9: "Anti-Child Labour & Advocacy",
-  10: "Training & Development",
-};
-
 const Projects = () => {
   const [filter, setFilter] = useState("All");
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
-    const { colorPrimary, colorTextSecondary } = antdTheme.token;
-const navigate = useNavigate();
+  const { colorPrimary } = antdTheme.token;
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
   const { list: apiProjects, loading } = useSelector(
@@ -57,7 +48,7 @@ const navigate = useNavigate();
     description: item.sub_description,
     label: item.tag,
     image_url: item.image_url,
-    program: CATEGORY_MAP[item.category] || "Others",
+    program: item.category_detail?.name || "Others",
     stats: {
       [item.imapct_1_label]: item.imapct_1_value,
       [item.imapct_2_label]: item.imapct_2_value,
@@ -76,17 +67,6 @@ const navigate = useNavigate();
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
   };
 
-  const containerStyle = {
-    padding: isMobile ? "20px 12px 60px" : "40px 100px 100px",
-    background: "#ffffff",
-  };
-
-  const cardStyle = {
-    borderRadius: 14,
-    height: "100%",
-    boxShadow: "0 8px 24px rgba(0, 0, 0, 0.08)",
-  };
-
   return (
     <div>
       {/* ================= HERO ================= */}
@@ -102,32 +82,58 @@ const navigate = useNavigate();
         }}
       >
         <Title level={2}>
-            Our <span style={{ color: colorPrimary }}>Projects & Impact</span>
-            </Title>
+          Our <span style={{ color: colorPrimary }}>Projects & Impact</span>
+        </Title>
 
         <Paragraph style={{ maxWidth: 700, margin: "0 auto" }}>
           Explore the tangible outcomes of our dedication to social welfare,
           empowerment, and community development.
         </Paragraph>
-        <Button type="primary" onClick={()=>navigate("/contact")}>Download Impact Report</Button>
+
+        <br />
+        <Button type="primary" onClick={() => navigate("/contact")}>
+          Download Impact Report
+        </Button>
       </motion.div>
 
       {/* ================= FILTERS ================= */}
-      <div style={{ textAlign: "center", margin: "40px 0" }}>
-        {programFilters.map((prog) => (
-          <Button
-            key={prog}
-            type={filter === prog ? "primary" : "default"}
-            style={{ margin: 6 }}
-            onClick={() => setFilter(prog)}
-          >
-            {prog}
-          </Button>
-        ))}
+      <div
+        style={{
+          margin: "40px auto",
+          padding: isMobile ? "0 12px" : 0,
+          maxWidth: 1200,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 10,
+            justifyContent: isMobile ? "flex-start" : "center",
+          }}
+        >
+          {programFilters.map((prog) => (
+            <Button
+              key={prog}
+              type={filter === prog ? "primary" : "default"}
+              onClick={() => {
+                console.log("Clicked Filter:", prog);
+                setFilter(prog);
+              }}
+            >
+              {prog}
+            </Button>
+          ))}
+        </div>
       </div>
 
       {/* ================= CONTENT ================= */}
-      <div style={containerStyle}>
+      <div
+        style={{
+          padding: isMobile ? "20px 12px 60px" : "40px 100px 100px",
+          background: "#ffffff",
+        }}
+      >
         <Row gutter={[24, 24]}>
           {loading ? (
             <Paragraph>Loading projects...</Paragraph>
@@ -136,7 +142,11 @@ const navigate = useNavigate();
               <Col xs={24} md={12} lg={8} key={item.id}>
                 <Card
                   hoverable
-                  style={cardStyle}
+                  style={{
+                    borderRadius: 14,
+                    height: "100%",
+                    boxShadow: "0 8px 24px rgba(0, 0, 0, 0.08)",
+                  }}
                   cover={
                     <img
                       src={item.image_url}
@@ -153,15 +163,13 @@ const navigate = useNavigate();
                   {Object.entries(item.stats).map(([key, value]) => (
                     <Paragraph key={key} style={{ marginBottom: 4 }}>
                       <strong>{key}</strong>{" "}
-                      <span style={{ color: "#1f7a34", fontWeight: 600 }}>
+                      <span
+                        style={{ color: "#1f7a34", fontWeight: 600 }}
+                      >
                         {value}
                       </span>
                     </Paragraph>
                   ))}
-
-                  {/* <Button style={{ marginTop: 10 }}>
-                    View Case Study
-                  </Button> */}
                 </Card>
               </Col>
             ))

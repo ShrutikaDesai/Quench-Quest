@@ -254,15 +254,16 @@ useEffect(() => {
   transition={{ delay: 0.4, duration: 0.6 }}
 >
   <Space size="large" style={{ marginTop: 20 }}>
-    <Button
+    {/* <Button
       type="primary"
       size="large"
       onClick={() => navigate('/get-involved')}
     >
       {hero?.primary_button || "Donate Now"}
-    </Button>
+    </Button> */}
 
     <Button
+     type="primary"
       size="large"
       onClick={() => navigate('/get-involved')}
     >

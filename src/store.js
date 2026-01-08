@@ -20,6 +20,8 @@ import contactCardReducer from "./slices/contactCardSlice";
 import contactDetailReducer from "./slices/contactDetailSlice";
 import contactFAQSlice from "./slices/contactFAQSlice"; 
 import projectReducer from "./slices/projectSlice";
+import corporatePartnershipReducer from "./slices/corporatePartnershipSlice";
+import upcomingEventsReducer from "./slices/upcomingEventsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -44,6 +46,8 @@ export const store = configureStore({
     contactDetail: contactDetailReducer,
     faq: contactFAQSlice,
     projects: projectReducer,
+    corporatePartnership: corporatePartnershipReducer,
+    upcomingEvents: upcomingEventsReducer,
     
 
   },
